@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/Source/">
+    <Project Path="Source/Source/Source.csproj" />
+  </Folder>
+  <Project Path="UI/UI.csproj" />
+</Solution>
