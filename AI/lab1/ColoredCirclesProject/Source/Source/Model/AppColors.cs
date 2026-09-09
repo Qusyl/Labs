@@ -13,6 +13,8 @@ namespace Source.Model
 
         Cyan,
 
-        White
+        White,
+
+        Orange,
     }
 }

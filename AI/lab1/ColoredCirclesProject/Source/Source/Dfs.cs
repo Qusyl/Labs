@@ -39,10 +39,10 @@ namespace Source
         {
             var actions = new List<(string, int)>();
 
-            foreach (var key in GameGeometry.Geometry.Keys)
+            foreach (var ring in GameGeometry.Rings)
             {
-                actions.Add((key, -1));
-                actions.Add((key, 1));
+                actions.Add((ring.Name, -1));
+                actions.Add((ring.Name, 1));
             }
             return actions;
         }
@@ -91,7 +91,9 @@ namespace Source
         }
         public State Rotate(State current, string ringName, int direction)
         {
-            int[] order = GameGeometry.Geometry[ringName];
+            int[] order = GameGeometry.Rings
+            .FirstOrDefault(r => r.Name == ringName)!
+            .Positions;
 
             int k = order.Length;
 

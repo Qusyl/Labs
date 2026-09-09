@@ -1,6 +1,8 @@
 <Solution>
+  <Folder Name="/Application/">
+    <Project Path="Application/Application/Application.csproj" />
+  </Folder>
   <Folder Name="/Source/">
     <Project Path="Source/Source/Source.csproj" />
   </Folder>
-  <Project Path="UI/UI.csproj" />
 </Solution>
