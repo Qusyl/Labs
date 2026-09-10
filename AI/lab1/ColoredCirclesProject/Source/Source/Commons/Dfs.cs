@@ -1,26 +1,26 @@
 using System.Drawing;
 using Source.Model;
 
-namespace Source
+namespace Source.Common
 {
    
     public class Dfs
     {
         private HashSet<string> _visited { get; set; } = new();
 
-        private readonly State _targetState;
-
+        private readonly GameContext _context;
         private Stack<(State currState, List<(string, int)> move)> _possibleWays { get; set; } = new();
     
-        public Dfs(State startState, State targetState)
+        public Dfs(GameContext context)
         {
-            _targetState = targetState;
+           
+            _context = context;
 
-            var startVisit = ColorToString(startState);
+            var startVisit = ColorToString(_context.InputData.StartState);
             
             _visited.Add(startVisit);
 
-            _possibleWays.Push((startState, new()));
+            _possibleWays.Push((_context.InputData.StartState, new()));
 
         }
         private string ColorToString(State state)
@@ -39,7 +39,7 @@ namespace Source
         {
             var actions = new List<(string, int)>();
 
-            foreach (var ring in GameGeometry.Rings)
+            foreach (var ring in _context.Geometry.Rings)
             {
                 actions.Add((ring.Name, -1));
                 actions.Add((ring.Name, 1));
@@ -84,14 +84,9 @@ namespace Source
             }
             return [];
         }
-
-        private bool IsTarget(State state)
-        {
-            return ColorToString(state) == ColorToString(_targetState);
-        }
         public State Rotate(State current, string ringName, int direction)
         {
-            int[] order = GameGeometry.Rings
+            int[] order = _context.Geometry.Rings
             .FirstOrDefault(r => r.Name == ringName)!
             .Positions;
 
@@ -100,7 +95,7 @@ namespace Source
             ColoredBall[] newBallsPosition = (ColoredBall[])current.Balls.Clone();
 
             var oldColors = new AppColors[k];
-           
+
             for (int i = 0; i < k; i++)
             {
                 var currentColor = current.Balls[order[i]].Color;
@@ -124,7 +119,11 @@ namespace Source
                 Balls = newBallsPosition
             };
         }
-
-        private int Mod(int a, int m) => ((a % m) + m) % m;
+        private  int Mod(int a, int m) => ((a % m) + m) % m;
+        private bool IsTarget(State state)
+        {
+            return ColorToString(state) == ColorToString(_context.InputData.TargetState);
+        }
+        
     }
 }

@@ -1,3 +1,5 @@
+using Source.Common;
+
 namespace Source.Model
 {
     public class ColoredBall

@@ -1,8 +1,8 @@
 namespace Source.Model
 {
-    public static class GameGeometry
+    public class GameGeometry
 {
-    public static readonly Ring[] Rings =
+    public  Ring[] Rings { get; set; } =
     [
            new()
             {

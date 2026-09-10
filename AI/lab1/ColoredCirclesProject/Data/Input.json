@@ -1,0 +1,82 @@
+{
+  "Start": {
+    "Balls": [
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Orange"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Orange"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Orange"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Orange"
+      }
+    ]
+  },
+  "Target": {
+    "Balls": [
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Orange"
+      },
+      {
+        "Color": "Orange"
+      },
+      {
+        "Color": "Orange"
+      },
+      {
+        "Color": "Orange"
+      }
+    ]
+  }
+}
