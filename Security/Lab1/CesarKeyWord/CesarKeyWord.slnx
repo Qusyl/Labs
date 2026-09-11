@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="CesarKeyWord/CesarKeyWord.csproj" />
+  <Project Path="Source/Source.csproj" />
+</Solution>
