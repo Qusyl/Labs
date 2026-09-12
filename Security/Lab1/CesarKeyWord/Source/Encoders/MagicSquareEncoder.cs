@@ -4,87 +4,111 @@ using System.Text;
 
 namespace Source.Encoders
 {
-    public static class MagicSquareEncoder
+    public class MagicSquareEncoder
     {
-        private static readonly int[] MagicSquare = [8, 1, 6, 3, 5, 7, 4, 9, 2];
-
-        private static string EncryptBlock(string block)
+        private bool IsSquare(int a) => Math.Sqrt(a) * Math.Sqrt(a) == a;
+        private  string EncryptBlock(string block)
         {
             var buffer = block.ToCharArray();
 
-            if (block.Length < 9)
+            var square = LoadSquare();
+
+            var len = square.Length;
+
+            if (!IsSquare(len))
             {
-                for (int i = block.Length - 1; i < 9; i++)
+                throw new InvalidOperationException("Квадрат не правильной формы");
+            }
+
+            if (block.Length < square.Length)
+            {
+                for (int i = block.Length - 1; i < len; i++)
                 {
                     buffer[i] = '0';
                 }
             }
-            var route = new int[9];
+            var route = new int[len];
 
-            for (int i = 0; i < 9; i++)
+            for (int i = 0; i < len; i++)
             {
-                route[MagicSquare[i] - 1] = i;
+                route[square[i] - 1] = i;
             }
-            var result = new char[9];
-            for (int i = 0; i < 9; i++)
+            var result = new char[len];
+            for (int i = 0; i < len; i++)
             {
                 result[i] = buffer[route[i]];
             }
             return new string(result);
         }
 
-        private static string DecryptBlock(string block)
+        private  string DecryptBlock(string block, int[] square)
         {
-            if (block.Length < 9)
+            var len = square.Length;
+           
+            if (!IsSquare(len))
             {
-                throw new InvalidOperationException("шифр должен быть не менее 9 символов!");
+                throw new InvalidOperationException("Квадрат не правильной формы");
             }
 
-            var route = new int[9];
+            var route = new int[len];
 
-            for (int i = 0; i < 9; i++)
+            for (int i = 0; i < len; i++)
             {
-                route[MagicSquare[i] - 1] = i;
+                route[square[i] - 1] = i;
             }
-            var result = new char[9];
-            for (int i = 0; i < 9; i++)
+            var result = new char[len];
+            for (int i = 0; i < len; i++)
             {
                 result[route[i]] = block[i];
             }
             return new string(result);
         }
-        public static string Encrypt(string word)
+        public  string Encrypt(string word)
         {
-            while(word.Length % 9 != 0)
+            var square = LoadSquare();
+            var len = square.Length;
+            while (word.Length % len != 0)
             {
                 word += '0';
             }
 
             StringBuilder sb = new StringBuilder();
 
-            for (int start = 0; start < word.Length; start += 9)
+            for (int start = 0; start < word.Length; start += len)
             {
-                string block = EncryptBlock(word.Substring(start, 9));
+                string block = EncryptBlock(word.Substring(start, len));
                 sb.Append(block);
             }
 
             return sb.ToString();
         }
-        public static string Decrypt(string word)
+        public  string Decrypt(string word)
         {
-            if(word.Length < 9)
-            {
-                throw new InvalidOperationException("Шифр должен быть не менее 9 символов");
-            }
+            var square = LoadSquare();
+
+            var len = square.Length;
 
             StringBuilder sb = new StringBuilder();
 
-            for (int start = 0; start < word.Length; start += 9)
+            for (int start = 0; start < word.Length; start += len)
             {
-                var block = DecryptBlock(word.Substring(start, 9));
+                var block = DecryptBlock(word.Substring(start, len), square);
                 sb.Append(block);
             }
             return sb.ToString();
+        }
+
+        private  int[] LoadSquare()
+        {
+            var directory = FilePath.PathSecrets();
+
+            var path = Path.Combine(directory, "s_key.txt");
+
+            return File
+                .ReadAllText(path)
+                .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                .Select(num =>int.Parse(num))
+                .ToArray();
         }
 
     }

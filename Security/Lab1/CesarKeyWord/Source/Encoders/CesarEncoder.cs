@@ -1,37 +1,53 @@
 ﻿namespace Source.Encoders
 {
-    public static class CesarEncoder 
+    public class CesarEncoder 
     {
-        private static readonly char[] Alphabet = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+        private int _key = 0;
+        public  string Encrypt(string path, int? enteredKey = default)
+        {
+            var input = ReadText("Input.txt");
 
-        private const int key = 6;
-        public static string Encrypt(string input)
-        { 
+            if (!enteredKey.HasValue)
+            {
+                LoadKey();
+            }
+
+            var alphabet = LoadAlphabet()
+                .ToArray();
+
             var result = new char[input.Length];
 
             for (int i = 0; i < input.Length; i++)
             {
-                var J = Array.IndexOf(Alphabet, input[i]);
+                var J = Array.IndexOf(alphabet, input[i]);
 
                 if (J == -1)
                 {
                     result[i] = input[i]; continue;
                 }
 
-                int I = (J + key) % Alphabet.Length;
+                int I = (J + _key) % alphabet.Length;
 
-                result[i] = Alphabet[I];
+                result[i] = alphabet[I];
             }
             return new string(result);
         }
 
-        public static string Decrypt(string input)
+        public string Decrypt(string input, int? enteredKey = default)
         {
             var result = new char[input.Length];
-            var decryptKey = Alphabet.Length - key;
+
+            var alphabet = LoadAlphabet()
+                .ToArray() ;
+
+            if (!enteredKey.HasValue)
+            {
+                LoadKey();
+            }
+            var decryptKey = alphabet.Length - _key;
             for(int i =0; i < input.Length; i++)
             {
-                var J = Array.IndexOf(Alphabet, input[i]);
+                var J = Array.IndexOf(alphabet, input[i]);
 
                 if (J == -1)
                 {
@@ -39,11 +55,51 @@
                     continue;
                 }
 
-                int I = (J + decryptKey) % Alphabet.Length;
+                int I = (J + decryptKey) % alphabet.Length;
 
-                result[i] = Alphabet[I];
+                result[i] = alphabet[I];
             }
             return new string(result);
+        }
+        
+        private string ReadText(string fileName)
+        {
+            var directory = FilePath.PathInputs();
+
+            string textForEncryptPath = Path.Combine(directory,"Input.txt");
+
+            if (!File.Exists(textForEncryptPath))
+            {
+                throw new InvalidOperationException($"Файл {fileName} не найден по пути {textForEncryptPath}!");
+            }
+               
+            return File.ReadAllText(textForEncryptPath);
+        }
+        private string LoadAlphabet()
+        {
+            var directory = FilePath.PathSecrets();
+
+            var alphabetPath = Path.Combine(directory, "Alphabet.txt");
+
+            if (!File.Exists(alphabetPath))
+            {
+                throw new InvalidOperationException($"Файла с алфаитом не существует по пути {alphabetPath}");
+            }
+
+            return File.ReadAllText(alphabetPath);
+
+        }
+       
+        private void LoadKey()
+        {
+            var keyPath = Path.Combine(FilePath.PathSecrets(), "c_key.txt");
+
+            if (!File.Exists(keyPath))
+            {
+                throw new InvalidOperationException($"Ключ не найден! : [{keyPath}]");
+            }
+
+            _key = int.Parse(File.ReadAllText(keyPath));
         }
     }
 }

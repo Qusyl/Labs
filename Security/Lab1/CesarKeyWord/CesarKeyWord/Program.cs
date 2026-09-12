@@ -1,4 +1,5 @@
-﻿using Source.Encoders;
+﻿using Source;
+using Source.Encoders;
 
 namespace CesarKeyWord
 {
@@ -6,11 +7,21 @@ namespace CesarKeyWord
     {
         public static void Main(string[] args)
         {
-            var input = "123456789123045678";
-            var encrypted = MagicSquareEncoder.Encrypt(input);
-            Console.WriteLine($"Зашифрован: {encrypted}");
-            var decrypted = MagicSquareEncoder.Decrypt(encrypted);
-            Console.WriteLine($"Расшифрован: {decrypted}");
+            var cesarEnc = new CesarEncoder();
+
+            var magicEnc = new MagicSquareEncoder();
+
+            var encryptor = new MainEncryptor(cesarEnc, magicEnc);
+
+            var encrypted = encryptor.Encrypt();
+
+            Console.WriteLine($"[MAIN] : зашифровано : {encrypted}");
+
+            File.WriteAllText(Path.Combine(FilePath.PathResults(), "Encrypted.txt"), encrypted);
+
+            var decrypted = encryptor.Decrypt();
+
+            Console.WriteLine($"[MAIN] : расшифровано : {decrypted}");
         }
     }
 }

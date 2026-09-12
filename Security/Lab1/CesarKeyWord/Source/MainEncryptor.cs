@@ -1,19 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Source
+﻿namespace Source
 {
-    public static class MainEncryptor
+    using Source.Encoders;
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    public class MainEncryptor(CesarEncoder cesarEncoder, MagicSquareEncoder maSquareEncoder)
     {
-        //public static string Encrypt(string word)
-        //{
+          public string Encrypt()
+        {
+            var filePath =Path.Combine(FilePath.PathInputs(), "input.txt");
 
-        //}
+            var word = File.ReadAllText(filePath);
 
-        //public static string Decrypt(string word) 
-        //{
-            
-        //}
+            var firstStage = cesarEncoder.Encrypt(word);
+
+            var secondStage = maSquareEncoder.Encrypt(firstStage);
+
+            return secondStage;
+        }
+
+        public string Decrypt()
+        {
+            var filePath = Path.Combine(FilePath.PathResults(), "Encrypted.txt");
+
+            var word = File.ReadAllText(filePath);
+
+            var secondStage = maSquareEncoder.Decrypt(word);
+
+            var firstStage = cesarEncoder.Decrypt(word);
+
+            return firstStage;
+        }
     }
 }
