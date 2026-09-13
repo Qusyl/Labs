@@ -1,17 +1,21 @@
-﻿namespace Source.Encoders
+﻿using Source.Commons;
+
+namespace Source.Encoders
 {
     public class CesarEncoder 
     {
-        private int _key = 0;
-        public  string Encrypt(string path, int? enteredKey = default)
+        private int _key = 1;
+        public  IEnumerable<string> Encrypt(string input, int? enteredKey = default)
         {
-            var input = ReadText("Input.txt");
-
-            if (!enteredKey.HasValue)
+         
+             if (!enteredKey.HasValue || enteredKey.Value == 0)
             {
                 LoadKey();
             }
-
+            else
+            {
+                _key = enteredKey.Value;
+            }
             var alphabet = LoadAlphabet()
                 .ToArray();
 
@@ -29,20 +33,24 @@
                 int I = (J + _key) % alphabet.Length;
 
                 result[i] = alphabet[I];
+                yield return new string(result);
             }
-            return new string(result);
         }
 
-        public string Decrypt(string input, int? enteredKey = default)
+        public IEnumerable<string> Decrypt(string input, int? enteredKey = default)
         {
             var result = new char[input.Length];
 
             var alphabet = LoadAlphabet()
                 .ToArray() ;
 
-            if (!enteredKey.HasValue)
+            if (!enteredKey.HasValue || enteredKey.Value == 0)
             {
                 LoadKey();
+            }
+            else
+            {
+                _key = enteredKey.Value;
             }
             var decryptKey = alphabet.Length - _key;
             for(int i =0; i < input.Length; i++)
@@ -58,23 +66,11 @@
                 int I = (J + decryptKey) % alphabet.Length;
 
                 result[i] = alphabet[I];
+                yield return new string(result);
             }
-            return new string(result);
+          
         }
-        
-        private string ReadText(string fileName)
-        {
-            var directory = FilePath.PathInputs();
-
-            string textForEncryptPath = Path.Combine(directory,"Input.txt");
-
-            if (!File.Exists(textForEncryptPath))
-            {
-                throw new InvalidOperationException($"Файл {fileName} не найден по пути {textForEncryptPath}!");
-            }
-               
-            return File.ReadAllText(textForEncryptPath);
-        }
+  
         private string LoadAlphabet()
         {
             var directory = FilePath.PathSecrets();

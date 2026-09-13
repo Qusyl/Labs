@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Source
+namespace Source.Commons
 {
     public static class FilePath
     {
@@ -34,6 +34,12 @@ namespace Source
             var directory = FoundDirectoryRoot();
 
             return Path.Combine(directory, "CesarKeyWord", "Results");
+        }
+        public static string PathTemp()
+        {
+            var directory = FoundDirectoryRoot();
+
+            return Path.Combine(directory, "Source", "Commons", "Temp", "temp.txt");
         }
     }
 }

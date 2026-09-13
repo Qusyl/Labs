@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="CesarKeyWord/CesarKeyWord.csproj" />
+  <Project Path="MainUI/MainUI.csproj" Id="18129982-4a40-4b74-8bc1-ff952576cf15" />
   <Project Path="Source/Source.csproj" />
 </Solution>

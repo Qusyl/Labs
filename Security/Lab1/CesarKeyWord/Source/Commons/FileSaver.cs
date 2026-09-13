@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Source
+namespace Source.Commons
 {
     public static class FileSaver
     {
@@ -21,6 +21,13 @@ namespace Source
             var resultsPath = Path.Combine(path, "Decrypted.txt");
 
             File.WriteAllText(resultsPath, result);
+        }
+
+        public static void SaveTemp(int size)
+        {
+            var path = FilePath.PathTemp();
+
+            File.WriteAllText(path, size.ToString());
         }
     }
 }
