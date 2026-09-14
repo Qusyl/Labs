@@ -2,26 +2,56 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="1920" d:DesignHeight="1080"
+        mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="720"
         x:Class="MainUI.MainWindow"
-        Title="MainUI">
+        Title="MainUI"
+        Background="#F8F9FA"> 
 
-    <Grid ColumnDefinitions="2*, Auto, *"
-          Background="White">
-
+    <Window.Styles>
       
-        <Grid Grid.Column="0" RowDefinitions="*, Auto">
+        <Style Selector="Button.action-btn">
+            <Setter Property="Background" Value="#7B5CB7"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="24,10"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.15"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Button.action-btn:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#6649A3"/>
+            <Setter Property="TextBlock.Foreground" Value="White"/>
+        </Style>
+        
+        <Style Selector="TextBlock.field-label">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="#6C757D"/>
+            <Setter Property="Margin" Value="0,0,0,4"/>
+        </Style>
+    </Window.Styles>
 
-            <Border Grid.Row="0">
-                <ContentControl x:Name="StageContent"
-                                Margin="20"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center">
+    <Grid ColumnDefinitions="2*, Auto, 1.2*">
+        
+      
+        <Grid Grid.Column="0" RowDefinitions="*, Auto" Margin="24">
+            
+            
+            <Border Grid.Row="0" 
+                    Background="White" 
+                    CornerRadius="12" 
+                    BoxShadow="0 4 12 0 #0A000000"> 
+                <ContentControl x:Name="StageContent" Margin="40">
                     <TextBlock x:Name="EncodedWord"
-                               FontSize="50"
-                               Foreground="Black"
+                               FontSize="64"
+                               FontWeight="Bold"
+                               Foreground="#212529"
                                FontFamily="fonts:Inter#Inter"
-                               Text="Test"/>
+                               Text="Test"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
                 </ContentControl>
             </Border>
 
@@ -29,60 +59,80 @@
             <StackPanel Grid.Row="1"
                         Orientation="Horizontal"
                         HorizontalAlignment="Center"
-                        Spacing="50"
-                        Margin="0,0,0,20">
+                        VerticalAlignment="Center"
+                        Spacing="20"
+                        Margin="0,24,0,4">
 
-                <ComboBox x:Name="Modes">
-                    <ComboBoxItem x:Name="EncryptMode">Закодировать</ComboBoxItem>
-                    <ComboBoxItem x:Name="DecryptMode">Расшифровать</ComboBoxItem>
-                </ComboBox>
-
-                <Button x:Name="BackButton" Background="Violet" Padding="20,8">
-                    <TextBlock FontSize="14" Text="Назад"/>
-                </Button>
-
-                <Button x:Name="NextButton" Background="Violet" Padding="20,8">
-                    <TextBlock FontSize="14" Text="Далее"/>
-                </Button>
-
-                <StackPanel VerticalAlignment="Center" 
-                            HorizontalAlignment="Center"
-                            >
-                    <TextBlock Foreground="Black" Margin="32 10">
-                        Ключ
-                    </TextBlock>
-                    <NumericUpDown x:Name="CesarKey"
-                               Minimum="1"
-                               Maximum="9"
-                               ParsingNumberStyle="Integer"
-                               />
-                    <TextBlock Foreground="Black" Margin="32 10">
-                        ручной ввод
-                    </TextBlock>
-                <CheckBox x:Name="UseKey" Background="Wheat"/>
+         
+                <StackPanel VerticalAlignment="Bottom">
+                    <TextBlock Text="Режим работы" Classes="field-label"/>
+                    <ComboBox x:Name="Modes" Width="160" Height="40" VerticalContentAlignment="Center">
+                        <ComboBoxItem x:Name="EncryptMode">Закодировать</ComboBoxItem>
+                        <ComboBoxItem x:Name="DecryptMode">Расшифровать</ComboBoxItem>
+                    </ComboBox>
                 </StackPanel>
-                
+
+              
+                <Button x:Name="BackButton" Content="Назад" Classes="action-btn" VerticalAlignment="Bottom" Height="40"/>
+                <Button x:Name="NextButton" Content="Далее" Classes="action-btn" VerticalAlignment="Bottom" Height="40"/>
+
+              
+                <StackPanel VerticalAlignment="Bottom">
+                    <TextBlock Text="Ключ Цезаря" Classes="field-label"/>
+                    <NumericUpDown x:Name="CesarKey"
+                                   Width="100" Height="40"
+                                   Minimum="1" Maximum="9"
+                                   ParsingNumberStyle="Integer"
+                                   VerticalContentAlignment="Center"/>
+                </StackPanel>
+
+               
+                <CheckBox x:Name="UseKey" 
+                          Content="Ручной ввод" 
+                          VerticalAlignment="Bottom"
+                          Margin="0,0,0,8"
+                          Foreground="#495057"/>
             </StackPanel>
         </Grid>
 
+        
         <GridSplitter Grid.Column="1"
-                      Width="5"
-                      Background="Gray"
+                      Width="1"
+                      Background="#DEE2E6"
                       ResizeDirection="Columns"
                       ResizeBehavior="PreviousAndNext"/>
 
-       
-        <Border Grid.Column="2" Background="#F0F0F0">
-    <DockPanel Margin="20">
-        <UniformGrid x:Name="MatrixSquare" 
-                     DockPanel.Dock="Bottom"
-                     Rows="4" Columns="4"
-                     Margin="0,10,0,0"/>
         
-        <ListBox x:Name="StagesList"
-                 FontFamily="fonts:Inter#Inter"
-                 FontSize="16"/>
-    </DockPanel>
-</Border>
+        <Border Grid.Column="2" Background="#FFFFFF" Margin="0">
+            <Grid RowDefinitions="*, Auto, Auto" Margin="24">
+                
+               
+                <ListBox x:Name="StagesList"
+                         Grid.Row="0"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         FontFamily="fonts:Inter#Inter"
+                         FontSize="15"
+                         Margin="0,0,0,16"/>
+                
+               
+                <StackPanel Grid.Row="1" Margin="0,0,0,16">
+                    <TextBlock Text="Алфавит" Classes="field-label"/>
+                    <UniformGrid x:Name="Alphabet" 
+                                 Rows="4" Columns="4" 
+                                 MinHeight="150"
+                                 Background="#F8F9FA"/>
+                </StackPanel>
+                
+               
+                <StackPanel Grid.Row="2">
+                    <TextBlock Text="Матрица шифра" Classes="field-label"/>
+                    <UniformGrid x:Name="MatrixSquare" 
+                                 Rows="4" Columns="4" 
+                                 MinHeight="150"
+                                 Background="#F8F9FA"/>
+                </StackPanel>
+            </Grid>
+        </Border>
     </Grid>
 </Window>

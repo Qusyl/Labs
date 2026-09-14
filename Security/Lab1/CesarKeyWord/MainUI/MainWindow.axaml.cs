@@ -6,10 +6,12 @@ using Avalonia.Media;
 using MainUI.Commons;
 using Source;
 using Source.Commons;
+using Source.Encryptor;
 using System;
 
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Numerics;
 
 public partial class MainWindow : Window
@@ -20,6 +22,7 @@ public partial class MainWindow : Window
 
     private int _currentStep = 0;
 
+    private int _initialKey = 0;
     private bool _useManualKey = false;
 
     private int _userManualKey = 1;
@@ -31,13 +34,14 @@ public partial class MainWindow : Window
     private StageMode _currentMode;
     public MainWindow()
     {
-        
+        SetInitialKey();
         InitializeComponent();
         InitButtons();
         SetBasedInput();
         StagesList.ItemsSource = _stages;
         _square = FileLoader.LoadSquare();
         RenderMatrix();
+        RenderCesarAlphabetOffset();
         _initialized = true;
     }
     private void SetBasedInput()
@@ -74,30 +78,14 @@ public partial class MainWindow : Window
         if (_useManualKey == true)
         {
             _userManualKey = (int)numeric?.Value!;
+            RenderCesarAlphabetOffset();
         }
         Reset();
         PreProcessed();
-
+        
     }
 
-    private void RenderMatrix()
-    {
-        MatrixSquare.Children.Clear();
-        var brush = new SolidColorBrush(Color.FromRgb(0, 0, 0));
-        foreach (var v in _square)
-        {
-            MatrixSquare.Children.Add(
-                new TextBlock
-                {
-                    Text = v.ToString(),
-                    FontSize = 18,
-                    Foreground = brush,
-                    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                });
-        }
-    }
-
+    
     private void OnUserKeyUse(object? sender, RoutedEventArgs e)
     {
         _useManualKey = UseKey.IsChecked == true;
@@ -170,7 +158,7 @@ public partial class MainWindow : Window
 
     private void PreProcessed()
     {
-        int? key = _useManualKey ? _userManualKey : default;
+        int? key = _useManualKey ? _userManualKey : _initialKey;
         if (_currentMode is StageMode.Encrypt)
         {
             
@@ -197,25 +185,71 @@ public partial class MainWindow : Window
     }
     private void OnUpdateUI()
     {
-        
+
         if (_stages.Count == 0)
         {
             return;
         }
 
-        if (_currentStep < 0) 
+        if (_currentStep < 0)
         {
-            _currentStep = 0; 
+            _currentStep = 0;
         }
 
         if (_currentStep >= _stages.Count)
-        { 
+        {
             _currentStep = _stages.Count - 1;
         }
 
         EncodedWord.Text = _stages[_currentStep];
 
 
+    }
+
+    private void RenderCesarAlphabetOffset()
+    {
+        var key = _useManualKey ? _userManualKey : _initialKey;
+        (string alphabet, string alphabetOffset) alphabetWithOffset = CesarAlphabetOffset.ShowAlphabet(key);
+        char[] primaryAlphabet = alphabetWithOffset.alphabet.ToArray();
+        char[] withOffset = alphabetWithOffset.alphabetOffset.ToArray();
+        Alphabet.Children.Clear();
+        var brush = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+        for(int i =0; i < alphabetWithOffset.alphabet.Length; i++)
+        {
+            var alp = $"{primaryAlphabet[i]} -> {withOffset[i]}";
+            Alphabet.Children.Add(
+            new TextBlock
+            {
+                Text = alp,
+                FontSize = 18,
+                Foreground = brush,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+            }
+            );
+        }
+    }
+    private void RenderMatrix()
+    {
+        MatrixSquare.Children.Clear();
+        var brush = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+        foreach (var v in _square)
+        {
+            MatrixSquare.Children.Add(
+                new TextBlock
+                {
+                    Text = v.ToString(),
+                    FontSize = 18,
+                    Foreground = brush,
+                    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                });
+        }
+    }
+
+    private void SetInitialKey()
+    {
+        _initialKey =  FileLoader.LoadKey();
     }
 
 }

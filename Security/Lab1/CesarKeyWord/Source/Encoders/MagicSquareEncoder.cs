@@ -13,7 +13,7 @@
            
             while (word.Length % len != 0)
             {
-                word += '0';
+                word += '_';
             }
 
             StringBuilder sb = new StringBuilder();
@@ -63,7 +63,7 @@
             {
                 for (int i = block.Length; i < len; i++)
                 {
-                    buffer[i] = '0';
+                    buffer[i] = '_';
                 }
             }
             var route = new int[len];
@@ -105,6 +105,5 @@
         }
         public int[] Square() => FileLoader.LoadSquare();
        
-
     }
 }

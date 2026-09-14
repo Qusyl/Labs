@@ -12,7 +12,7 @@ namespace Source.Commons
 
             var resultsPath = Path.Combine(path, "Encrypted.txt");
 
-            File.WriteAllText(resultsPath, result);
+            File.WriteAllText(resultsPath, result, System.Text.Encoding.UTF8);
         }
         public static void SaveDecrypted(string result)
         {
@@ -20,14 +20,14 @@ namespace Source.Commons
 
             var resultsPath = Path.Combine(path, "Decrypted.txt");
 
-            File.WriteAllText(resultsPath, result);
+            File.WriteAllText(resultsPath, result, System.Text.Encoding.UTF8);
         }
 
         public static void SaveTemp(int size)
         {
             var path = FilePath.PathTemp();
 
-            File.WriteAllText(path, size.ToString());
+            File.WriteAllText(path, size.ToString(), System.Text.Encoding.UTF8);
         }
     }
 }

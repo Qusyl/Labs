@@ -10,13 +10,13 @@ namespace Source.Encoders
          
              if (!enteredKey.HasValue || enteredKey.Value == 0)
             {
-                LoadKey();
+                _key = FileLoader.LoadKey();
             }
             else
             {
                 _key = enteredKey.Value;
             }
-            var alphabet = LoadAlphabet()
+            var alphabet = FileLoader.LoadAlphabet()
                 .ToArray();
 
             var result = new char[input.Length];
@@ -41,12 +41,12 @@ namespace Source.Encoders
         {
             var result = new char[input.Length];
 
-            var alphabet = LoadAlphabet()
+            var alphabet = FileLoader.LoadAlphabet()
                 .ToArray() ;
 
             if (!enteredKey.HasValue || enteredKey.Value == 0)
             {
-                LoadKey();
+                _key = FileLoader.LoadKey();
             }
             else
             {
@@ -71,31 +71,8 @@ namespace Source.Encoders
           
         }
   
-        private string LoadAlphabet()
-        {
-            var directory = FilePath.PathSecrets();
-
-            var alphabetPath = Path.Combine(directory, "Alphabet.txt");
-
-            if (!File.Exists(alphabetPath))
-            {
-                throw new InvalidOperationException($"Файла с алфаитом не существует по пути {alphabetPath}");
-            }
-
-            return File.ReadAllText(alphabetPath);
-
-        }
        
-        private void LoadKey()
-        {
-            var keyPath = Path.Combine(FilePath.PathSecrets(), "c_key.txt");
-
-            if (!File.Exists(keyPath))
-            {
-                throw new InvalidOperationException($"Ключ не найден! : [{keyPath}]");
-            }
-
-            _key = int.Parse(File.ReadAllText(keyPath));
-        }
+       
+       
     }
 }
