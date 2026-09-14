@@ -2,8 +2,12 @@ namespace Source.Model
 {
     public class GameGeometry
 {
-    public  Ring[] Rings { get; set; } =
-    [
+        public Ring[] Rings { get; set; }
+
+        public GameGeometry()
+        {
+            Rings = 
+            [
            new()
             {
                 Name = "Red",
@@ -22,5 +26,7 @@ namespace Source.Model
                 Positions = [7, 8, 9, 10, 11]
             }
     ];
+        }
+    
 }
 }

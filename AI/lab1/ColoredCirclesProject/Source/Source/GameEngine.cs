@@ -18,6 +18,7 @@ namespace Source
         {
             try
             {
+                DataLoader.Init();
                 (GameGeometry geometry, UserInput inputs) = DataLoader.LoadData();
 
                 Context = new GameContext(geometry, inputs);
