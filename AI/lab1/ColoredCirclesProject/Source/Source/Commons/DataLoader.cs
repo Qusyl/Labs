@@ -12,25 +12,33 @@
     {
          public static void Init()
         {
-            var directory = FindDirectory();
-            var pathGeometry = Path.Combine(directory, "Data", "Geometry.json");
-            var pathInput = Path.Combine(directory, "Data", "Input.json");
+          
+
+    var directory = FindDirectory();
+
+    
+
+    var pathGeometry = Path.Combine(directory, "Data", "Geometry.json");
+    var pathInput = Path.Combine(directory, "Data", "Input.json");
+
+  
+
             var startState = new State
             {
                 Balls =
          [
         new() { Color = AppColors.Purple }, // 0
         new() { Color = AppColors.Cyan },   // 1
-        new() { Color = AppColors.Orange }, // 2
+        new() { Color = AppColors.Red }, // 2
         new() { Color = AppColors.Purple }, // 3
         new() { Color = AppColors.Cyan },   // 4
-        new() { Color = AppColors.Orange }, // 5
+        new() { Color = AppColors.Red }, // 5
         new() { Color = AppColors.Purple }, // 6
         new() { Color = AppColors.Cyan },   // 7
-        new() { Color = AppColors.Orange }, // 8
+        new() { Color = AppColors.Red }, // 8
         new() { Color = AppColors.Purple }, // 9
         new() { Color = AppColors.Cyan },   // 10
-        new() { Color = AppColors.Orange }, // 11
+        new() { Color = AppColors.Red }, // 11
     ]
             };
 
@@ -46,10 +54,10 @@
         new() { Color = AppColors.Cyan }, // 5
         new() { Color = AppColors.Cyan }, // 6
         new() { Color = AppColors.Cyan },   // 7
-        new() { Color = AppColors.Orange }, // 8
-        new() { Color = AppColors.Orange }, // 9
-        new() { Color = AppColors.Orange },   // 10
-        new() { Color = AppColors.Orange }, // 11
+        new() { Color = AppColors.Red }, // 8
+        new() { Color = AppColors.Red }, // 9
+        new() { Color = AppColors.Red },   // 10
+        new() { Color = AppColors.Red }, // 11
     ]
             };
 
@@ -84,63 +92,67 @@
             var geometry = InitializeGeometry() ?? throw new InvalidDataException("Failed to load geometry");
             return (geometry, input);
         }
-        private static UserInput InitializeUserInput()
-        {
-            try
-            {
-                var directory = FindDirectory();
+      private static UserInput InitializeUserInput()
+{
+    var directory = FindDirectory();
+    var jsonPath = Path.Combine(directory, "Data", "Input.json");
 
-                var jsonPath = Path.Combine(directory, "Data", "Geometry.json");
+    if (!File.Exists(jsonPath))
+    {
+        throw new FileNotFoundException("Input.json not found", jsonPath);
+    }
 
-                if (!File.Exists(jsonPath))
-                {
-                    System.Console.WriteLine("Агде");
-                    throw new Exception("NOOOOOOOOOOOOO [uI]");
-                }
+    var jsonContent = File.ReadAllText(jsonPath, Encoding.UTF8);
 
-                var jsonContent = File.ReadAllText(jsonPath, Encoding.UTF8);
-                if (jsonContent.StartsWith("\uFEFF"))
-                {
-                    jsonContent = jsonContent.Substring(1);
-                }
-                
-                var userInput = JsonSerializer.Deserialize<UserInput>(jsonContent, _jsonOptions);
-                return userInput ?? throw new InvalidDataException("Failed to load user's input");
-            }
-            catch(JsonException ex)
-            {
-                System.Console.WriteLine($"JSON EXCEPTION: {ex.Message}");
-                throw;
-            }   
-        }
-        private static GameGeometry InitializeGeometry()
-        {
-            var directory = FindDirectory();
+  
 
-            var jsonPath = Path.Combine(directory, "Data", "Geometry.json");
-            
-             if (!File.Exists(jsonPath))
-                {
-                    System.Console.WriteLine("Агде");
-                    throw new Exception("NOOOOOOOOOOOOO [geeom]");
-                }
-           
-            var jsonContent = File.ReadAllText(jsonPath, Encoding.UTF8);
-            if (jsonContent.StartsWith("\uFEFF"))
-                jsonContent = jsonContent.Substring(1);
+    try
+    {
+        var userInput = JsonSerializer.Deserialize<UserInput>(
+            jsonContent,
+            _jsonOptions);
 
-            try
-            {
-                var geometry = JsonSerializer.Deserialize<GameGeometry>(jsonContent, _jsonOptions);
-                return geometry ?? throw new InvalidDataException("Failed to load game geometry");
-            }
-            catch (JsonException ex)
-            {
-                Console.WriteLine($"Ошибка парсинга JSON: {ex.Message}");
-            
-                throw;
-            }
-        }
+        return userInput
+            ?? throw new InvalidDataException("Input.json deserialized to null");
+    }
+    catch (JsonException ex)
+    {
+        Console.WriteLine($"JSON EXCEPTION: {ex.Message}");
+        throw;
+    }
+}
+    private static GameGeometry InitializeGeometry()
+{
+   
+
+    var directory = FindDirectory();
+
+   
+
+    var jsonPath = Path.Combine(directory, "Data", "Geometry.json");
+
+
+
+    var jsonContent = File.ReadAllText(jsonPath);
+
+  
+
+    try
+    {
+        var geometry = JsonSerializer.Deserialize<GameGeometry>(
+            jsonContent,
+            _jsonOptions);
+
+       
+
+        return geometry!;
+    }
+    catch (JsonException ex)
+    {
+        Console.WriteLine($"JSON EXCEPTION: {ex.Message}");
+        throw;
+    }
+}
 
         private static string FindDirectory() =>
           Directory.GetParent(Directory.GetCurrentDirectory())

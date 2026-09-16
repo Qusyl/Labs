@@ -124,6 +124,76 @@ namespace Source.Common
         {
             return ColorToString(state) == ColorToString(_context.InputData.TargetState);
         }
-        
+        private (char symbol, ConsoleColor color) GetColorSymbol(AppColors color)
+{
+    return color switch
+    {
+        AppColors.Purple => ('P', ConsoleColor.Magenta),
+        AppColors.Cyan => ('C', ConsoleColor.Cyan),
+        AppColors.Red => ('R', ConsoleColor.Red),
+        AppColors.Green => ('G', ConsoleColor.Green),
+        AppColors.Blue => ('B', ConsoleColor.Blue),
+        AppColors.Yellow => ('Y', ConsoleColor.Yellow),
+        AppColors.White => ('W', ConsoleColor.White),
+        _ => throw new NotSupportedException($"Не известный цвет {color}")
+    };
+}
+        public void PrintState(State state)
+        {
+            Console.WriteLine();
+            Console.WriteLine("       0 1 2 3 4 5 6 7 8 9 10 11");
+
+            foreach (var ring in _context.Geometry.Rings)
+            {
+                Console.Write($"{ring.Name,-7}");
+
+                for (int position = 0; position < state.Balls.Length; position++)
+                {
+                    if (ring.Positions.Contains(position))
+                    {
+                        (char symbol, ConsoleColor color) = GetColorSymbol(state.Balls[position].Color);
+                        Console.ForegroundColor = color;
+                        Console.Write($" {symbol}");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else
+                    {
+                        Console.Write("· ");
+                    }
+                }
+
+                Console.WriteLine();
+            }
+
+
+            Console.WriteLine();
+        }
+public void PrintSolution(List<(string ringName, int direction)> solution)
+{
+    var currentState = _context.InputData.StartState;
+
+    Console.WriteLine("========== Начало ==========");
+    PrintState(currentState);
+
+    for (int i = 0; i < solution.Count; i++)
+    {
+        var move = solution[i];
+
+        currentState = Rotate(
+            currentState,
+            move.ringName,
+            move.direction);
+
+        Console.WriteLine(
+            $"========== Шаг {i + 1}: " +
+            $"{move.ringName} " +
+            $"{(move.direction == 1 ? "Вправо" : "Влево")} ==========");
+
+        PrintState(currentState);
+    }
+
+    Console.WriteLine("========== Цель ==========");
+    PrintState(currentState);
+}
     }
 }

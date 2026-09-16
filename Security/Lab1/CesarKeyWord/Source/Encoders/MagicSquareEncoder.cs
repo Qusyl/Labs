@@ -57,8 +57,6 @@
                 throw new InvalidOperationException("Квадрат не правильной формы");
             }
 
-            
-
             if (block.Length < square.Length)
             {
                 for (int i = block.Length; i < len; i++)
@@ -68,11 +66,12 @@
             }
             var route = new int[len];
 
-            for (int i = 0; i < len; i++)
+            for (int i = 0; i < len; i++) //строит матрицу маршрута
             {
                 route[square[i] - 1] = i;
             }
             var result = new char[len];
+            
             for (int i = 0; i < len; i++)
             {
                 result[i] = buffer[route[i]];

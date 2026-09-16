@@ -17,7 +17,5 @@ namespace Source.Common
         Cyan,
 
         White,
-
-        Orange,
     }
 }

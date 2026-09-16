@@ -1,37 +1,35 @@
-﻿using Source.Common;
-using Source.Commons;
-using Source.Model;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.Json;
+﻿
+
 
 namespace Source
 {
+    using Source.Common;
+    using Source.Commons;
+    using Source.Model;
     public class GameEngine
     {
         public GameContext Context { get; init; }
 
         private Dfs _graph { get; init; }
 
-        public GameEngine()
+public GameEngine()
+
         {
-            try
-            {
-                DataLoader.Init();
-                (GameGeometry geometry, UserInput inputs) = DataLoader.LoadData();
+    // DataLoader.Init();
+    (GameGeometry geometry, UserInput inputs) = DataLoader.LoadData();
 
-                Context = new GameContext(geometry, inputs);
+    Context = new GameContext(geometry, inputs);
 
-                _graph = new Dfs(Context);
-            }
-            catch(Exception ex)
-            {
-                Console.WriteLine($"[{nameof(GameEngine)}] : {ex.Message}");
-            }
-        }
-        public List<(string ringName, int direction)> Play()
-            => _graph.FindWay();
+    _graph = new Dfs(Context);
+}      public List<(string ringName, int direction)> Play()
+{
+    
+    var result = _graph.FindWay();
+
+    _graph.PrintSolution(result);
+
+    return result;
+}
 
       
 
