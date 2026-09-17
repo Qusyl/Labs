@@ -1,37 +1,38 @@
-﻿
-
-
-namespace Source
+﻿namespace Source
 {
     using Source.Common;
     using Source.Commons;
     using Source.Model;
+
     public class GameEngine
     {
         public GameContext Context { get; init; }
 
         private Dfs _graph { get; init; }
 
-public GameEngine()
-
+        public GameEngine()
         {
-    // DataLoader.Init();
-    (GameGeometry geometry, UserInput inputs) = DataLoader.LoadData();
+            (GameGeometry geometry, UserInput inputs) = DataLoader.LoadData();
 
-    Context = new GameContext(geometry, inputs);
+            Context = new GameContext(geometry, inputs);
 
-    _graph = new Dfs(Context);
-}      public List<(string ringName, int direction)> Play()
-{
-    
-    var result = _graph.FindWay();
+            _graph = new Dfs(Context);
+        }
 
-    _graph.PrintSolution(result);
+        public List<(string ringName, int direction)> Play()
+        {
+            return _graph.FindWay();
+        }
 
-    return result;
-}
-
-      
-
+        public State ApplyMove(
+            State state,
+            string ringName,
+            int direction)
+        {
+            return _graph.Rotate(
+                state,
+                ringName,
+                direction);
+        }
     }
 }

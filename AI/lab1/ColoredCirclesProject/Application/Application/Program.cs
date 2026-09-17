@@ -14,7 +14,8 @@ namespace Program
         {
             var gameEngine = new GameEngine();
 
-            var result = gameEngine.Play();
+            List<(string ringName, int direction)> result = gameEngine.Play();
+           
 
             Console.WriteLine($"Число шагов: {result.Count}");
         }

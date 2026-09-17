@@ -5,4 +5,5 @@
   <Folder Name="/Source/">
     <Project Path="Source/Source/Source.csproj" />
   </Folder>
+  <Project Path="AppUI/AppUI.csproj" />
 </Solution>

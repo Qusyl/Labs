@@ -10,16 +10,17 @@
 
     public static class DataLoader
     {
-         public static void Init()
+        public static void Init()
         {
-          
 
-    var directory = FindDirectory();
 
-    
+            var directory = FindDirectory();
 
-    var pathGeometry = Path.Combine(directory, "Data", "Geometry.json");
-    var pathInput = Path.Combine(directory, "Data", "Input.json");
+
+
+            var pathGeometry = Path.Combine(directory, "ColoredCirclesProject", "Data", "Geometry.json");
+            System.Console.WriteLine($"====={pathGeometry}======");
+    var pathInput = Path.Combine(directory, "ColoredCirclesProject", "Data", "Input.json");
 
   
 
@@ -95,7 +96,7 @@
       private static UserInput InitializeUserInput()
 {
     var directory = FindDirectory();
-    var jsonPath = Path.Combine(directory, "Data", "Input.json");
+    var jsonPath = Path.Combine(directory, "ColoredCirclesProject","Data", "Input.json");
 
     if (!File.Exists(jsonPath))
     {
@@ -129,7 +130,7 @@
 
    
 
-    var jsonPath = Path.Combine(directory, "Data", "Geometry.json");
+    var jsonPath = Path.Combine(directory, "ColoredCirclesProject","Data", "Geometry.json");
 
 
 

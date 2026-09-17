@@ -1,4 +1,5 @@
 using System.Drawing;
+using System.Reflection.Metadata;
 using Source.Model;
 
 namespace Source.Common
@@ -7,7 +8,9 @@ namespace Source.Common
     public class Dfs
     {
         private HashSet<string> _visited { get; set; } = new();
+        private  int MaxDepth = 10;
 
+        private bool isFoundTheWay = false;
         private readonly GameContext _context;
         private Stack<(State currState, List<(string, int)> move)> _possibleWays { get; set; } = new();
     
@@ -35,6 +38,13 @@ namespace Source.Common
 
             return string.Join("-", colors);
         }
+        private void ExtendDeepth()
+        {
+            if (!isFoundTheWay)
+            {
+                MaxDepth += 5;
+            }
+        }
         public List<(string ringName, int direction)> GetPossibleActions()
         {
             var actions = new List<(string, int)>();
@@ -52,14 +62,43 @@ namespace Source.Common
         }
         public List<(string ringName, int direction)> FindWay()
         {
+            var startDepth = 1;
+            var maxDepth = 50;
+
+            while (startDepth <= maxDepth)
+            {
+                _visited.Clear();
+                _possibleWays.Clear();
+                _visited.Add(ColorToString(_context.InputData.StartState));
+                _possibleWays.Push((_context.InputData.StartState, new()));
+
+                var result = FindWayWithMaxDepth(startDepth);
+                if (result != null)
+                {
+                    return result;
+                }
+                startDepth += 1;
+            }
+
+            return [];
+        }
+
+        private List<(string ringName, int direction)>? FindWayWithMaxDepth(int limit)
+        {
             while (_possibleWays.Count > 0)
             {
+              
                 var way = _possibleWays.Pop();
 
                 if (IsTarget(way.currState))
                 {
                     return way.move;
                 }
+                 if (way.move.Count >= limit)
+                {
+                  
+                    continue;
+                  }
 
                 List<(string ringName, int direction)> possibleActions = GetPossibleActions();
 
@@ -82,7 +121,7 @@ namespace Source.Common
                     }
                 }
             }
-            return [];
+            return null;
         }
         public State Rotate(State current, string ringName, int direction)
         {
@@ -122,7 +161,12 @@ namespace Source.Common
         private  int Mod(int a, int m) => ((a % m) + m) % m;
         private bool IsTarget(State state)
         {
-            return ColorToString(state) == ColorToString(_context.InputData.TargetState);
+            if (ColorToString(state) == ColorToString(_context.InputData.TargetState))
+            {
+                isFoundTheWay = true;
+                return true;
+            }
+            return false;
         }
         private (char symbol, ConsoleColor color) GetColorSymbol(AppColors color)
 {
@@ -196,4 +240,7 @@ public void PrintSolution(List<(string ringName, int direction)> solution)
     PrintState(currentState);
 }
     }
-}
+}  
+  
+  
+  
