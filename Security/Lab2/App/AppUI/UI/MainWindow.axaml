@@ -1,0 +1,107 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:disks="clr-namespace:UI.Disks"
+        mc:Ignorable="d"
+        d:DesignWidth="1000"
+        d:DesignHeight="1000"
+        x:Class="AppUI.MainWindow"
+        Title="AlbertoDeshifrato">
+
+    <ScrollViewer>
+
+        <Grid RowDefinitions="Auto,600,Auto,Auto"
+              Margin="30"
+              RowSpacing="25">
+
+            <!-- Ввод сообщения -->
+            <StackPanel Grid.Row="0"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        Spacing="20">
+
+                <TextBox x:Name="MessageTextBox"
+                         Watermark="Сообщение"
+                         Width="250"
+                         Height="40"/>
+
+                <Button x:Name="ApplyButton"
+                        Content="Применить"
+                        Click="Apply_Message_Click"
+                        Width="120"
+                        Height="40"/>
+
+            </StackPanel>
+
+
+            <!-- Диски -->
+            <Grid Grid.Row="1"
+                  Width="600"
+                  Height="600"
+                  HorizontalAlignment="Center">
+
+                <disks:DiskControl
+                    Width="600"
+                    Height="600"/>
+
+                <Canvas x:Name="DiskCanvas"
+                        Width="600"
+                        Height="600"/>
+
+            </Grid>
+
+
+            <!-- Назад / Далее -->
+            <StackPanel Grid.Row="2"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        Spacing="20">
+
+                <Button Content="← Назад"
+                        Click="Back_button_click"
+                        Width="120"
+                        Height="40"/>
+
+                <Button Content="Далее →"
+                        Click="Next_button_click"
+                        Width="120"
+                        Height="40"/>
+
+            </StackPanel>
+
+
+            <!-- Результат -->
+            <StackPanel Grid.Row="3"
+                        HorizontalAlignment="Center"
+                        Spacing="15">
+
+                <TextBlock x:Name="EncodingText"
+                           TextAlignment="Center"
+                           FontSize="20"/>
+
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            Spacing="20">
+
+                    <Button Content="Зашифровать"
+                            Click="Encrypt_button_click"
+                            Width="140"
+                            Height="40"/>
+
+                    <Button Content="Расшифровать"
+                            Click="Decrypt_button_click"
+                            Width="140"
+                            Height="40"/>
+
+                    <NumericUpDown x:Name="StepBoxNumeric" Width="200" Increment="1" FormatString="0" Minimum="1" Maximum="30"/>
+                
+                </StackPanel>
+
+            </StackPanel>
+
+        </Grid>
+
+    </ScrollViewer>
+
+</Window>
