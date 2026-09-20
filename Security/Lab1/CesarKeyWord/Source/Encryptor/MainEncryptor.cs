@@ -4,7 +4,6 @@
     using Source.Encoders;
 
     using System.Collections.Generic;
-  
     public class MainEncryptor()
     {
         private CesarEncoder _cesarEncoder = new CesarEncoder();
