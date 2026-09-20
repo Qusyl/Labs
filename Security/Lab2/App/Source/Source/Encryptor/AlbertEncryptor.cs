@@ -13,36 +13,99 @@ namespace Source.Encryptor
         private char[] _internalDisk;
         private readonly int _basedStep;
 
+        private int manualStep = 1;
+
         public AlbertEncryptor()
         {
-           _externalDisk = InitExternalDisk();
+            _externalDisk = InitExternalDisk();
+            InitInternalDisk();
+    
           
            _basedStep = InitBasedStep();
         }
 
-        public string Encrypt(string message,string keyWord, int step)
+        public IEnumerable<char[]> Encrypt(string message, int step)
         {
-            InitInternalDisk(keyWord);
+            Clear();
+            InitInternalDisk();
             char[] encrypted = new char[message.Length];
 
             char[] internalDisk = new char[_internalDisk.Length];
-            
+
             Array.Copy(_internalDisk, internalDisk, _internalDisk.Length);
             internalDisk = ShiftAlphabetEncoding(internalDisk, _basedStep);
 
             for (int i = 0; i < message.Length; i++)
             {
                 var indexOfCharExternalDisk = Array.IndexOf(_externalDisk, message[i]);
-                
+
                 encrypted[i] = internalDisk[indexOfCharExternalDisk];
-                
+
+                Save(internalDisk);
+
                 internalDisk = ShiftAlphabetEncoding(internalDisk, step);
 
+                yield return encrypted.ToArray();
             }
-
-            return new string(encrypted);
+            File.WriteAllText(PathLoader.EncryptedPath(), new string(encrypted));
         }
-        
+    
+        public char[] GetExternalDisk()
+        {
+            var exDisk = new char[_externalDisk.Length];
+
+            Array.Copy(_externalDisk, exDisk, _externalDisk.Length);
+
+            return exDisk;
+        }
+        public IEnumerable<char[]> Decrypt(string message, int step)
+        {
+            Clear();
+            InitInternalDisk();
+            
+            char[] decrypted = new char[message.Length];
+
+            var internalDisk = new char[_internalDisk.Length];
+
+            Array.Copy(_internalDisk, internalDisk, _internalDisk.Length);
+
+            internalDisk = ShiftAlphabetEncoding(internalDisk, _basedStep);
+
+            for (int i = 0; i < message.Length; i++)
+            {
+                var indexOfCharInternalDisk = Array.IndexOf(internalDisk, message[i]);
+                if (indexOfCharInternalDisk == -1)
+                {
+                    throw new Exception($"Символ '{message[i]}' не найден в диске");
+                }
+                decrypted[i] = _externalDisk[indexOfCharInternalDisk];
+                Save(internalDisk);
+                internalDisk = ShiftAlphabetEncoding(internalDisk, step);
+                yield return decrypted.ToArray();
+            }
+            
+            File.WriteAllText(PathLoader.DecryptedPath(), new string(decrypted));
+        }
+
+        public char[] GetShiftAlphabet()
+        {
+
+            var internalDisk = new char[_internalDisk.Length];
+
+            Array.Copy(_internalDisk, internalDisk, _internalDisk.Length);
+
+            return internalDisk;
+        }
+        private void Save(char[] snapshot)
+        {
+            var path = PathLoader.TempPath();
+            File.AppendAllText(path, new string(snapshot) + Environment.NewLine);
+        }
+        private void Clear()
+        {
+            var path = PathLoader.TempPath();
+            File.WriteAllText(path, "");
+        }
         private char[] ShiftAlphabetEncoding(char[] current, int step)
         {
             int m = current.Length;
@@ -56,11 +119,7 @@ namespace Source.Encryptor
             return shifted;
 
         }
-     
-        public string Decrypt(string message)
-        {
-            return null;
-        }
+    
         private int InitBasedStep()
         {
             var path = PathLoader.BasedStepPath();
@@ -77,19 +136,25 @@ namespace Source.Encryptor
             return externalDisk?.ToArray();
         }
 
-        public  void InitInternalDisk(string keyWord)
-        {
 
+
+        public  void InitInternalDisk()
+        {
+            var keyword = File
+            .ReadAllText(PathLoader.KeyWordPath())
+            .Replace("\n", "")
+            .Replace("\r", ""); 
             _internalDisk = new char[_externalDisk.Length];
+
             var visited = new HashSet<char>();
 
             var startPos = 0;
-            for (int i = 0; i < keyWord.Length; i++)
+            for (int i = 0; i < keyword.Length; i++)
             {
-                if (!visited.Contains(keyWord[i]))
+                if (!visited.Contains(keyword[i]))
                 {
-                    _internalDisk[startPos] = keyWord[i];
-                    visited.Add(keyWord[i]);
+                    _internalDisk[startPos] = keyword[i];
+                    visited.Add(keyword[i]);
                     startPos++;
                 }
                 

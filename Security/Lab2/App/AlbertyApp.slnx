@@ -2,6 +2,10 @@
   <Folder Name="/Application/">
     <Project Path="Application/App/App.csproj" />
   </Folder>
+  <Folder Name="/AppUI/" />
+  <Folder Name="/AppUI/UI/">
+    <Project Path="AppUI/UI/AppUI.csproj" />
+  </Folder>
   <Folder Name="/Source/">
     <Project Path="Source/Source/Source.csproj" />
   </Folder>

@@ -10,16 +10,24 @@ namespace Source.Utills
         public static string AlphabetPath()
         {
             var directory = GetRootDirectory();
+           
 
             var path = Path.Combine(directory,
              "Source",
              "Source",
              "Secrets",
              "alphabet.txt");
+        System.Console.WriteLine(path);
+            return path;
+        }
+        public static string KeyWordPath()
+        {
+            var directory = GetRootDirectory();
+
+            var path = Path.Combine(directory, "Source", "Source", "Secrets", "keyword.txt");
 
             return path;
         }
-
         public static string ShiftedAlphabetPath()
         {
             var directory = GetRootDirectory();
@@ -32,10 +40,10 @@ namespace Source.Utills
 
             return path;
         }
-        
+
         public static string BasedStepPath()
         {
-             var directory = GetRootDirectory();
+            var directory = GetRootDirectory();
 
             var path = Path.Combine(directory,
              "Source",
@@ -45,14 +53,53 @@ namespace Source.Utills
 
             return path;
         }
-        private static string GetRootDirectory()
+        public static string EncryptedPath()
         {
-            var path = Directory
-            .GetParent(Directory.GetCurrentDirectory())
-            .Parent
-            .FullName;
+            var directory = GetRootDirectory();
+
+            var path = Path.Combine(
+                directory,
+                "Application",
+                "App",
+                "Result",
+                "Encrypted.txt"
+                 );
 
             return path;
         }
+        public static string DecryptedPath()
+        {
+            var directory = GetRootDirectory();
+
+            var path = Path.Combine(
+                directory,
+                "Application",
+                "App",
+                "Result",
+                "Decrypted.txt"
+                 );
+
+            return path;
+        }
+        public static string TempPath()
+        {
+            var directory = GetRootDirectory();
+
+            var path = Path.Combine(directory, "Source", "Source", "Utills", "middleware.txt");
+
+            return path;
+        }
+        private static string GetRootDirectory()
+        {
+            var dir = new DirectoryInfo(Directory.GetCurrentDirectory());
+
+            while (dir != null && !dir.EnumerateFiles("*.slnx").Any())
+            {
+                dir = dir.Parent;
+            }
+
+            return dir?.FullName ?? throw new FileNotFoundException("sln not found");
+        }
+        
     }
 }
