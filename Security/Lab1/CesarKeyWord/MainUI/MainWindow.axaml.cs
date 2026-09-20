@@ -1,11 +1,12 @@
 ﻿
 namespace MainUI;
+
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using MainUI.Commons;
-using Source;
 using Source.Commons;
+using Source.Encryptor;
 using System;
 
 using System.Collections.ObjectModel;

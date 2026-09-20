@@ -2,10 +2,9 @@
 {
     using Source.Commons;
     using Source.Encoders;
-    using System;
+   
     using System.Collections.Generic;
-    using System.Runtime.CompilerServices;
-    using System.Text;
+    
     public class MainEncryptor()
     {
         private CesarEncoder _cesarEncoder = new CesarEncoder();
