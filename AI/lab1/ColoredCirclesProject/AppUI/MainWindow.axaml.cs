@@ -14,6 +14,8 @@ namespace AppUI
     using Source.Common;
     using Source.Model;
     using Avalonia.Controls.Shapes;
+    using Source.Analyse;
+
     public partial class MainWindow : Window
     {
         private readonly GameEngine _engine;
@@ -74,8 +76,10 @@ namespace AppUI
             
             _engine = new GameEngine();
 
-            
+
             _solution = _engine.Play();
+
+            AnalyzeSaver.SaveAnalyse(_engine.GetReport());
 
            
             _currentState = _engine.Context.InputData.StartState;
