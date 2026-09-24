@@ -28,7 +28,7 @@ namespace AppUI
 
         private bool _isAutoPlaying;
 
-        private readonly Ellipse[] _ballVisuals = new Ellipse[12];
+        private readonly Ellipse[] _ballVisuals = new Ellipse[8];
 
         private const double BallRadius = 25;
 
@@ -45,32 +45,26 @@ namespace AppUI
 
         
         private readonly Point[] _positions =
-        [
-            new Point(225, 489.9),  // 0
-            new Point(150, 360),    // 1
-            new Point(225, 230.1),  // 2
+[
+    new Point(185.1, 456.4),  
+    new Point(185.1, 263.6),  
 
-            new Point(400, 248.2),   // 3
-            new Point(400, 471.8),   // 4
+    new Point(400.0, 248.2),  
+    new Point(400.0, 471.8),  
 
-            new Point(575, 489.9),   // 5
-            new Point(650, 360),     // 6
+    new Point(600.0, 471.8),  
+    new Point(600.0, 248.2), 
 
-            new Point(600, 248.2),   // 7
-
-            new Point(600, 471.8),   // 8
-            new Point(775, 489.9),   // 9
-            new Point(850, 360),     // 10
-            new Point(800, 230.1)    // 11
-        ];
-
+    new Point(814.9, 263.6),  
+    new Point(814.9, 456.4)   
+];
        
         private readonly Dictionary<string, int[]> _ringPositions =
             new()
             {
-                ["Red"] = [0, 1, 2, 3, 4],
-                ["Yellow"] = [3, 4, 5, 6, 7],
-                ["White"] = [7, 8, 9, 10, 11]
+                ["Red"] = [0, 1, 2, 3],
+                ["Yellow"] = [2, 3, 4, 5],
+                ["White"] = [4, 5, 6, 7]
             };
 
         public MainWindow()
@@ -358,7 +352,7 @@ namespace AppUI
             
             const int frames = 30;
 
-            const int delay = 15;
+            const int delay = 1;
 
            
             for (int frame = 0; frame <= frames; frame++)
@@ -564,7 +558,7 @@ namespace AppUI
             {
                 await NextStep();
 
-                await Task.Delay(250);
+             
             }
 
             _isAutoPlaying = false;
