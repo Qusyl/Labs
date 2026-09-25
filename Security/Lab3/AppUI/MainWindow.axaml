@@ -1,0 +1,107 @@
+<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="AppUI.MainWindow"
+    Width="900"
+    Height="800"
+    Title="Полибианский квадрат">
+
+    <ScrollViewer>
+        <StackPanel
+            Margin="30"
+            Spacing="20">
+
+            <TextBlock
+                Text="Полибианский квадрат"
+                FontSize="28"
+                FontWeight="Bold"
+                HorizontalAlignment="Center"/>
+
+         
+            <StackPanel Spacing="8">
+
+                <TextBlock
+                    Text="Сообщение"
+                    FontSize="18"
+                    FontWeight="SemiBold"/>
+
+                <TextBox
+                    x:Name="MessageBox"
+                    Height="100"
+                    AcceptsReturn="True"
+                    TextWrapping="Wrap"
+                    Watermark="Введите сообщение..."
+                    FontSize="18"/>
+            </StackPanel>
+
+           
+            <StackPanel
+                Orientation="Horizontal"
+                HorizontalAlignment="Center"
+                Spacing="15">
+
+                <Button
+                    Content="Зашифровать"
+                    Click="Encrypt_Click"
+                    Padding="25,10"/>
+
+                <Button
+                    Content="Расшифровать"
+                    Click="Decrypt_Click"
+                    Padding="25,10"/>
+
+                <Button
+                    Content="Очистить"
+                    Click="Clear_Click"
+                    Padding="25,10"/>
+            </StackPanel>
+
+            <!-- Результат -->
+            <StackPanel Spacing="8">
+
+                <TextBlock
+                    Text="Результат"
+                    FontSize="18"
+                    FontWeight="SemiBold"/>
+
+                <TextBox
+                    x:Name="ResultBox"
+                    Height="80"
+                    IsReadOnly="True"
+                    TextWrapping="Wrap"
+                    FontSize="18"/>
+            </StackPanel>
+
+    
+            <Border
+                BorderThickness="1"
+                Padding="15"
+                HorizontalAlignment="Center">
+
+                <StackPanel Spacing="10">
+
+                    <TextBlock
+                        Text="Таблица символов"
+                        FontSize="22"
+                        FontWeight="Bold"
+                        HorizontalAlignment="Center"/>
+
+                    <Grid
+                        x:Name="PolybiusGrid"
+                        HorizontalAlignment="Center"/>
+
+                </StackPanel>
+
+            </Border>
+
+            
+            <TextBlock
+                x:Name="TransitionText"
+                Text="Введите символ для просмотра смещения"
+                FontSize="20"
+                HorizontalAlignment="Center"/>
+
+        </StackPanel>
+    </ScrollViewer>
+
+</Window>
