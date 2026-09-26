@@ -34,6 +34,7 @@ public partial class MainWindow : Window
         _encoder = new PolybEncoder();
         _crAnalyzer = new CryptoAnalyzator();
         _table = FileLoader.LoadTable();
+        FileLoader.LoadAlphabets();
 
         BuildTable();
 
@@ -172,7 +173,7 @@ public partial class MainWindow : Window
         {
             string encrypted = _encoder.Encrypt(message);
 
-            _crAnalyzer.Scan();
+            _crAnalyzer.Analyze();
 
             await AnimateTransformAsync(message, isEncrypt: true, token);
 
