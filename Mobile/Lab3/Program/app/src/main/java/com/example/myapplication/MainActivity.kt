@@ -34,12 +34,6 @@ class MainActivity : ComponentActivity() {
             MyApplicationTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 
-                    Greeting(
-                        name = "World",
-                        modifier = Modifier
-                            .padding(innerPadding)
-                            .fillMaxSize()
-                    )
 
                 }
             }
@@ -47,12 +41,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier.fillMaxSize()) {
-    GreetingBackground(modifier, name)
 
-
-}
 
 @Composable
 fun GreetingBackground(modifier: Modifier = Modifier, name: String){

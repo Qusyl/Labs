@@ -1,5 +1,6 @@
 ﻿namespace Source
 {
+    using Source.Analyse;
     using Source.Common;
     using Source.Commons;
     using Source.Model;
@@ -23,7 +24,10 @@
         {
             return _graph.FindWay();
         }
-
+        public AnalyseReport GetReport()
+        {
+            return new AnalyseReport(_graph.Iterations, _graph.MaxOpenSize, _graph.MaxTotalSize, _graph.CurrentOpenSize);
+        }
         public State ApplyMove(
             State state,
             string ringName,

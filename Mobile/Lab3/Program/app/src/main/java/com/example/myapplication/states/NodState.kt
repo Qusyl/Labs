@@ -1,3 +1,8 @@
 package com.example.myapplication.states
 
-data class NodState()
+import androidx.compose.runtime.mutableStateOf
+
+data class NodState(
+    var numbers : MutableList<Int> = mutableListOf(),
+    var result : Int = 0
+    )

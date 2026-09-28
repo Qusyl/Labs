@@ -24,18 +24,6 @@
       },
       {
         "Color": "Cyan"
-      },
-      {
-        "Color": "Red"
-      },
-      {
-        "Color": "Purple"
-      },
-      {
-        "Color": "Cyan"
-      },
-      {
-        "Color": "Red"
       }
     ]
   },
@@ -51,7 +39,10 @@
         "Color": "Purple"
       },
       {
-        "Color": "Purple"
+        "Color": "Red"
+      },
+      {
+        "Color": "Red"
       },
       {
         "Color": "Cyan"
@@ -61,21 +52,6 @@
       },
       {
         "Color": "Cyan"
-      },
-      {
-        "Color": "Cyan"
-      },
-      {
-        "Color": "Red"
-      },
-      {
-        "Color": "Red"
-      },
-      {
-        "Color": "Red"
-      },
-      {
-        "Color": "Red"
       }
     ]
   }

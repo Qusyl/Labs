@@ -4,26 +4,30 @@ using Source.Model;
 
 namespace Source.Common
 {
-   
+
     public class Dfs
     {
         private HashSet<string> _visited { get; set; } = new();
-        private  int MaxDepth = 10;
+        private HashSet<string> _closed { get; set; } = new();
+        private int MaxDepth = 10;
 
+        private int _iterations = 0;
+        private int _maxOpenSize = 0;
+        private int _maxTotalSize = 0;
         private bool isFoundTheWay = false;
         private readonly GameContext _context;
-        private Stack<(State currState, List<(string, int)> move)> _possibleWays { get; set; } = new();
-    
+        private Stack<State> _possibleWays { get; set; } = new();
+
+        private Dictionary<string, (string parentKey, string ringName, int direction)> _parent = new();
+
         public Dfs(GameContext context)
         {
-           
+
             _context = context;
 
-            var startVisit = ColorToString(_context.InputData.StartState);
-            
-            _visited.Add(startVisit);
-
-            _possibleWays.Push((_context.InputData.StartState, new()));
+            var startKey = ColorToString(_context.InputData.StartState);
+            _visited.Add(startKey);
+            _possibleWays.Push((_context.InputData.StartState));
 
         }
         private string ColorToString(State state)
@@ -38,13 +42,7 @@ namespace Source.Common
 
             return string.Join("-", colors);
         }
-        private void ExtendDeepth()
-        {
-            if (!isFoundTheWay)
-            {
-                MaxDepth += 5;
-            }
-        }
+
         public List<(string ringName, int direction)> GetPossibleActions()
         {
             var actions = new List<(string, int)>();
@@ -62,67 +60,72 @@ namespace Source.Common
         }
         public List<(string ringName, int direction)> FindWay()
         {
-            var startDepth = 1;
-            var maxDepth = 50;
-
-            while (startDepth <= maxDepth)
+            // var startDepth = 1;
+            // var maxDepth = 50;
+            // while (startDepth <= maxDepth)
+            // {
+            //     _visited.Clear();
+            //     _possibleWays.Clear();
+            //     _visited.Add(ColorToString(_context.InputData.StartState));
+            //     _possibleWays.Push((_context.InputData.StartState, new()));
+            //     var result = FindWayWithMaxDepth();
+            //     if (result != null)
+            //     {
+            //         return result;
+            //     }
+            //     startDepth += 1;
+            // }
+            while (_possibleWays.Count > 0 && !isFoundTheWay)
             {
-                _visited.Clear();
-                _possibleWays.Clear();
-                _visited.Add(ColorToString(_context.InputData.StartState));
-                _possibleWays.Push((_context.InputData.StartState, new()));
+                _iterations++;
+                _maxOpenSize = Math.Max(_maxOpenSize, _possibleWays.Count);
+                _maxTotalSize = Math.Max(_maxTotalSize, _possibleWays.Count + _closed.Count);
+                var currentState = _possibleWays.Pop();
+                 
 
-                var result = FindWayWithMaxDepth(startDepth);
-                if (result != null)
+                var currKey = ColorToString(currentState);
+
+                if (IsTarget(currentState))
                 {
-                    return result;
+                    return BuildPath(currKey);
                 }
-                startDepth += 1;
-            }
 
-            return [];
-        }
-
-        private List<(string ringName, int direction)>? FindWayWithMaxDepth(int limit)
-        {
-            while (_possibleWays.Count > 0)
-            {
-              
-                var way = _possibleWays.Pop();
-
-                if (IsTarget(way.currState))
-                {
-                    return way.move;
-                }
-                 if (way.move.Count >= limit)
-                {
-                  
-                    continue;
-                  }
+                _closed.Add(currKey);
 
                 List<(string ringName, int direction)> possibleActions = GetPossibleActions();
 
                 foreach (var action in possibleActions)
                 {
-                    var stateAfterRotate = Rotate(way.currState, action.ringName, action.direction);
+                    var stateAfterRotate = Rotate(currentState, action.ringName, action.direction);
+                    var keyAfterRotate = ColorToString(stateAfterRotate);
 
-                    if (!IsVisited(stateAfterRotate))
+                    if (!_visited.Contains(keyAfterRotate))
                     {
-                        var colorsAfterRotate = ColorToString(stateAfterRotate);
-
-                        _visited.Add(colorsAfterRotate);
-
-                        var newMove = new List<(string, int)>(way.move)
-                        {
-                            (action.ringName, action.direction)
-                        };
-
-                        _possibleWays.Push((stateAfterRotate, newMove));
+                        _visited.Add(keyAfterRotate);
+                        _parent[keyAfterRotate] = (currKey, action.ringName, action.direction);
+                        _possibleWays.Push(stateAfterRotate);
                     }
                 }
             }
-            return null;
+            return [];
         }
+        private List<(string ringName, int direction)> BuildPath(string targetKey)
+        {
+            var path = new List<(string ringName, int direction)>();
+            var key = targetKey;
+            while (_parent.ContainsKey(key))
+            {
+                var (parentKey, ringName, direction) = _parent[key];
+                path.Add((ringName, direction));
+                key = parentKey;
+            }
+            path.Reverse();
+            return path;
+        }
+        // private List<(string ringName, int direction)>? FindWayWithMaxDepth()
+        // {
+            
+        // }
         public State Rotate(State current, string ringName, int direction)
         {
             int[] order = _context.Geometry.Rings
@@ -153,6 +156,7 @@ namespace Source.Common
                     Color = oldColors[sourceIndex]
                 };
             }
+           
             return new State
             {
                 Balls = newBallsPosition
@@ -212,6 +216,10 @@ namespace Source.Common
 
             Console.WriteLine();
         }
+public int Iterations => _iterations;
+public int MaxOpenSize => _maxOpenSize;
+public int CurrentOpenSize => _possibleWays.Count;
+public int MaxTotalSize => _maxTotalSize;
 public void PrintSolution(List<(string ringName, int direction)> solution)
 {
     var currentState = _context.InputData.StartState;
