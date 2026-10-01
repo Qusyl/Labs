@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2D-графика средствами XML"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="320dp"
+            android:layout_marginTop="12dp"
+            android:background="#EEEEEE">
+
+            <View
+                android:id="@+id/preview"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center"
+                android:background="@drawable/shape_rect" />
+        </FrameLayout>
+
+        <!-- Выбор фигуры -->
+        <RadioGroup
+            android:id="@+id/rgShape"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rbRect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Прямоугольник" />
+
+            <RadioButton
+                android:id="@+id/rbOval"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Овал" />
+
+            <RadioButton
+                android:id="@+id/rbRing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Кольцо" />
+        </RadioGroup>
+
+        <!-- Ввод параметров -->
+        <EditText
+            android:id="@+id/etWidth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Ширина, dp (1–300)"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/etHeight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Высота, dp (1–300)"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/etRadius"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Скругление углов, dp (только прямоугольник)"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/etStroke"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Толщина обводки / кольца, dp"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/etColor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Цвет заливки, например #FF5722"
+            android:inputType="text" />
+
+        <Button
+            android:id="@+id/btnDraw"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Нарисовать" />
+
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="16sp" />
+    </LinearLayout>
+</ScrollView>
