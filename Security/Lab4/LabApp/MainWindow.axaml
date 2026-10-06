@@ -1,0 +1,30 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="using:LabApp"
+        x:Class="LabApp.MainWindow"
+        Title="Гамма-шифр на регистрах сдвига" Width="1100" Height="800">
+  <ScrollViewer HorizontalScrollBarVisibility="Auto">
+    <StackPanel Margin="16" Spacing="10">
+      <TextBlock Text="Слово (символы из 64-символьного алфавита):" />
+      <StackPanel Orientation="Horizontal" Spacing="8">
+        <TextBox x:Name="WordBox" Width="320" />
+        <Button Content="Зашифровать" Click="Encrypt_Click" />
+      </StackPanel>
+      <SelectableTextBlock x:Name="ResultText" FontFamily="Consolas,Menlo,monospace" TextWrapping="Wrap" />
+      <TextBlock Text="Первые 5 тактов:" FontWeight="SemiBold" />
+      <ItemsControl x:Name="Diagrams">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate x:DataType="local:DiagramItem">
+            <Border BorderBrush="LightGray" BorderThickness="1" CornerRadius="6" Padding="8" Margin="0,0,0,8">
+              <StackPanel>
+                <TextBlock Text="{Binding Title}" FontWeight="SemiBold" />
+                <local:RegisterView Step="{Binding Step}" HorizontalAlignment="Left" />
+                <TextBlock Text="{Binding Description}" FontFamily="Consolas,Menlo,monospace" />
+              </StackPanel>
+            </Border>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </StackPanel>
+  </ScrollViewer>
+</Window>
