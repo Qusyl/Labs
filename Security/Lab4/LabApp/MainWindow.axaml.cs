@@ -40,21 +40,31 @@ public partial class MainWindow : Window
             for (int i = 0; i < bits.Length; i++)
             {
                
-                var a = r5.Next();
-                
-                int shifts = 1 + a.Fb;
-                var subs = new List<TickStep>();
-                for (int s = 0; s < shifts; s++) subs.Add(r17.Next());
-            
-                gamma[i] = subs[^1].Out;
+                    var a = r5.Next();
 
-                if (i < 5)
-                {
-                    items.Add(new($"Регистр 5, такт {i + 1}: XOR = {a.Fb}, регистр 17 сдвигается на {shifts}", a));
-                    for (int s = 0; s < shifts; s++)
-                        items.Add(new($"Регистр 17, такт {i + 1}, сдвиг {s + 1} из {shifts}", subs[s],
-                                      s == shifts - 1 ? $"   ← бит гаммы = {gamma[i]}" : ""));
-                }
+
+                int parity = a.State.Aggregate(0, (x, y) => x ^ y);
+                int shifts = 1 + parity;
+
+                    var subs = new List<TickStep>();
+                    for (int s = 0; s < shifts; s++) subs.Add(r17.Next());
+
+                    gamma[i] = subs[^1].Out;
+
+                    if (i < 5)
+                    {
+                         string sumFormula =
+        $";  сумма разрядов {string.Concat(a.State)} = {string.Join("⊕", a.State)} = {parity}";
+
+    items.Add(new(
+        $"Регистр 5, такт {i + 1}: сумма разрядов = {parity}, регистр 17 сдвигается на {shifts}",
+        a,
+        sumFormula));
+
+    for (int s = 0; s < shifts; s++)
+        items.Add(new($"Регистр 17, такт {i + 1}, сдвиг {s + 1} из {shifts}", subs[s],
+                      s == shifts - 1 ? $"   ← бит гаммы = {gamma[i]}" : ""));
+                    }
             }
 
             var cipherBits = _cipher.Xor(bits, gamma);
