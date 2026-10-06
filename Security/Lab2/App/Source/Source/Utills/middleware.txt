@@ -1,11 +1,12 @@
 z ,.?aplebcdfghijkmnoqrstuvwxy
+yz ,.?aplebcdfghijkmnoqrstuvwx
 xyz ,.?aplebcdfghijkmnoqrstuvw
+wxyz ,.?aplebcdfghijkmnoqrstuv
 vwxyz ,.?aplebcdfghijkmnoqrstu
+uvwxyz ,.?aplebcdfghijkmnoqrst
 tuvwxyz ,.?aplebcdfghijkmnoqrs
+stuvwxyz ,.?aplebcdfghijkmnoqr
 rstuvwxyz ,.?aplebcdfghijkmnoq
+qrstuvwxyz ,.?aplebcdfghijkmno
 oqrstuvwxyz ,.?aplebcdfghijkmn
-mnoqrstuvwxyz ,.?aplebcdfghijk
-jkmnoqrstuvwxyz ,.?aplebcdfghi
-hijkmnoqrstuvwxyz ,.?aplebcdfg
-fghijkmnoqrstuvwxyz ,.?aplebcd
-cdfghijkmnoqrstuvwxyz ,.?apleb
+noqrstuvwxyz ,.?aplebcdfghijkm

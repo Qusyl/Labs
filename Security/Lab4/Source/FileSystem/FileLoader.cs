@@ -34,5 +34,33 @@ namespace Source.FileSystem
 
             return File.ReadAllText(path);
         }
+
+       public static int[] LoadReg17Taps()
+{
+    var path = FilePaths.PathTap5();
+
+    var content = File.ReadAllLines(path);
+
+    var c = content[1]
+        .Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries)
+        .Select(int.Parse)
+        .ToArray();
+
+    return c;
+}
+
+public static int[] LoadReg5Taps()
+{
+    var path = FilePaths.PathTap5();
+
+    var content = File.ReadAllLines(path);
+
+    var c = content[0]
+        .Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries)
+        .Select(int.Parse)
+        .ToArray();
+
+    return c;
+}
     }
 }

@@ -67,7 +67,9 @@ namespace Source
 
                 sb.Append(_codeToChar[code]);
             }
-            return sb.ToString();
+            var str = sb.ToString();
+         
+            return str;
         }
 
         public string Decrypt(int[] encrypted, int[] gamma)
@@ -75,7 +77,7 @@ namespace Source
             var sb = new StringBuilder();
             var decryptedBits = Xor(encrypted, gamma);
             sb.Append("Биты шифра: ");
-            System.Console.WriteLine($"Биты шифра: ");
+            System.Console.Write($"Биты шифра: ");
             for (int i = 0; i < decryptedBits.Length; i++)
             {
                 sb.Append(decryptedBits[i]);

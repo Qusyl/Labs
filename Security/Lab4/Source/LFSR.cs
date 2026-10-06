@@ -10,102 +10,259 @@ public class LFSR
     private int[] _reg5 = new int[5];
     private int[] _reg17 = new int[17];
 
-    private int[] _reg5Taps = new[] { 4, 1 };
 
-    private int[] _reg17Taps = new[]{ 16, 2 };
+    private readonly int[] _reg5Taps;
+    private readonly int[] _reg17Taps;
 
-   
+
+    private const int DetailedLogBits = 5;
+
+
+    private const int LogWidth = 78;
 
     public LFSR()
     {
-        _reg5 = FileLoader.LoadReg5();
+        _reg5  = FileLoader.LoadReg5();
         _reg17 = FileLoader.LoadReg17();
+        _reg5Taps = FileLoader.LoadReg5Taps();
+        _reg17Taps = FileLoader.LoadReg17Taps();
     }
 
     public int[] GenerateGamma(int length)
     {
         int[] gamma = new int[length];
 
-        var loggerReport = new StringBuilder();
-        loggerReport.Append("======== Начало генерации гаммы ========\n");
+        var log = new StringBuilder();
+
+        WriteHeader(log, "ГЕНЕРАЦИЯ ГАММЫ", length);
+
+        log.AppendLine("Начальные состояния регистров:");
+        log.AppendLine();
+        AppendRegisterTable(log, "Регистр 5",  _reg5,  _reg5Taps,  highlightTaps: true);
+        log.AppendLine();
+        AppendRegisterTable(log, "Регистр 17", _reg17, _reg17Taps, highlightTaps: true);
+        log.AppendLine();
 
         for (int i = 0; i < length; i++)
         {
-            loggerReport.Append($"-------- {i+1} бит гаммы --------\n");
-            gamma[i] = NextGammaBit(loggerReport);
+            gamma[i] = NextGammaBit(log, i, i < DetailedLogBits);
         }
-        loggerReport.Append("======== Конец генерации гаммы ========\n");
 
-        FileSaver.SaveGamma(gamma, loggerReport.ToString());
+        WriteFooter(log, "ГЕНЕРАЦИЯ ГАММЫ ЗАВЕРШЕНА");
 
+        FileSaver.SaveGamma(gamma, log.ToString());
         return gamma;
     }
-    private int NextGammaBit(StringBuilder logger)
-    {
-        int control = 0;
 
-        foreach (var reg in _reg5)
+    
+    private static int XorAllBits(int[] reg)
+    {
+        int sum = 0;
+        for (int i = 0; i < reg.Length; i++)
+            sum ^= reg[i];
+        return sum;
+    }
+
+    private int NextGammaBit(StringBuilder log, int bitIndex, bool detailed)
+    {
+        if (detailed)
         {
-            control ^= reg;
+            WriteHeader(log, $"БИТ ГАММЫ #{bitIndex + 1}", bitIndex);
         }
 
-        logger.Append($"Сумма разрядов предшествующего регистра (reg 5): {control}\n");
+       
+        int control = XorAllBits(_reg5);
 
-        logger.Append("Такт первого региста: \n");
-        Tact(_reg5, _reg5Taps, logger);
-        logger.Append("Начало работы второго регистра\n");
+        if (detailed)
+        {
+            log.AppendLine();
+            AppendRegisterTable(log, "Регистр 5 (до сдвига)", _reg5, _reg5Taps, highlightTaps: true);
+
+            log.AppendLine();
+            log.AppendLine($"  Сумма по модулю 2 всех разрядов R5: " +
+                           $"{string.Join(" ^ ", _reg5)} = {control}");
+            log.AppendLine($"  → Управляющий сигнал = {control}  " +
+                           $"({(control == 1 ? "R17 сделает 2 такта" : "R17 сделает 1 такт")})");
+        }
+
+        if (detailed)
+        {
+            log.AppendLine();
+            log.AppendLine("  ── Такт регистра 5 ──");
+        }
+
+        int r5Out = Tact(_reg5, _reg5Taps, log, detailed);
+
+        if (detailed)
+        {
+            AppendRegisterTable(log, "Регистр 5 (после сдвига)", _reg5, _reg5Taps, highlightTaps: false);
+            log.AppendLine($"  Выпавший бит R5: {r5Out}");
+        }
+
 
         int tactCount = (control == 1) ? 2 : 1;
-
-        logger.Append($"Число тактов 2 регистра = {tactCount}\n");
-
         int gammaBit = 0;
-        for (int i = 0; i < tactCount; i++)
+
+        if (detailed)
         {
-            logger.Append($"---- {i+1} такт регистра[2] ----\n");
-            gammaBit = Tact(_reg17, _reg17Taps, logger);
+            log.AppendLine();
+            log.AppendLine($"  ── Такты регистра 17 (всего: {tactCount}) ──");
         }
-        logger.Append($"бит гаммы на выходе: {gammaBit}\n");
+
+        for (int t = 0; t < tactCount; t++)
+        {
+            if (detailed)
+            {
+                log.AppendLine();
+                log.AppendLine($"  [Такт R17 {t + 1}/{tactCount}]");
+            }
+
+            gammaBit = Tact(_reg17, _reg17Taps, log, detailed);
+        }
+
+        if (detailed)
+        {
+            AppendRegisterTable(log, "Регистр 17 (после тактов)", _reg17, _reg17Taps, highlightTaps: false);
+            log.AppendLine();
+            log.AppendLine($"  ▶ БИТ ГАММЫ #{bitIndex + 1} = {gammaBit}");
+            WriteFooter(log, $"КОНЕЦ БИТА #{bitIndex + 1}", bitIndex);
+        }
 
         return gammaBit;
     }
-    private int Tact(int[] reg, int[] taps, StringBuilder logger)
+
+
+    private int Tact(int[] reg, int[] taps, StringBuilder log, bool detailed)
     {
-        var feedBack = 0;
+        int tapA = taps[0];
+        int tapB = taps[1];
 
-        foreach (var tap in taps)
+        int feedback = reg[tapA] ^ reg[tapB];
+        int outBit   = reg[0];
+
+        if (detailed)
         {
-            feedBack ^= reg[tap];
+            log.AppendLine($"    Отводы: [{tapA}]={reg[tapA]}, [{tapB}]={reg[tapB]}");
+            log.AppendLine($"    Обратная связь = {reg[tapA]} ^ {reg[tapB]} = {feedback}");
+            log.AppendLine($"    Выпадающий бит (R[0]) = {outBit}");
+            log.AppendLine();
+            AppendShiftDiagram(log, reg, feedback);
         }
-        logger.Append($"1) XOR отводов = {feedBack}\n");
 
-        var eldBit = reg[0];
 
-        logger.Append($"2) Старший ( выпадающий ) бит = {eldBit}\n");
-        logger.Append($"3) Сдвиг разрядов регистра: \n");
-        logger.Append($"Было: ");
-        for (int i = 0; i < reg.Length; i++)
-        {
-            logger.Append($"{reg[i]}");
-        }
-        logger.Append(Environment.NewLine);
-        logger.Append($"Стало: ");
         for (int i = 0; i < reg.Length - 1; i++)
         {
             reg[i] = reg[i + 1];
-            logger.Append($"{reg[i]}");
         }
-        logger.Append(Environment.NewLine);
-        reg[reg.Length - 1] = feedBack;
-        logger.Append($"4) Добавление бита обратной связи: {feedBack}\n");
-        for (int i = 0; i < reg.Length; i++)
+        reg[reg.Length - 1] = feedback;
+
+        if (detailed)
         {
-            logger.Append($"{reg[i]} ");
+            log.AppendLine();
+            log.AppendLine($"    Результат сдвига: {FormatBits(reg)}");
         }
-        logger.Append(Environment.NewLine);
-        logger.Append($"---- Конец такта регистра ----\n");
-        return eldBit;
+
+        return outBit;
     }
 
 
+    private static void WriteHeader(StringBuilder log, string title, int index)
+    {
+        string inner = $" {title} ";
+        int pad = Math.Max(0, LogWidth - inner.Length - 2);
+        int left  = pad / 2;
+        int right = pad - left;
+
+        log.AppendLine();
+        log.AppendLine("╔" + new string('═', LogWidth - 2) + "╗");
+        log.AppendLine("║" + new string(' ', left) + inner + new string(' ', right) + "║");
+        log.AppendLine("╚" + new string('═', LogWidth - 2) + "╝");
+    }
+
+    private static void WriteFooter(StringBuilder log, string title, int index = -1)
+    {
+        string inner = $" {title} ";
+        int pad = Math.Max(0, LogWidth - inner.Length - 2);
+        int left  = pad / 2;
+        int right = pad - left;
+
+        log.AppendLine("┌" + new string('─', LogWidth - 2) + "┐");
+        log.AppendLine("│" + new string(' ', left) + inner + new string(' ', right) + "│");
+        log.AppendLine("└" + new string('─', LogWidth - 2) + "┘");
+        log.AppendLine();
+    }
+
+
+    private static void AppendRegisterTable(
+        StringBuilder log,
+        string title,
+        int[] reg,
+        int[] taps,
+        bool highlightTaps)
+    {
+        log.AppendLine($"  {title}:");
+        log.AppendLine();
+
+
+        log.Append("    idx |");
+        for (int i = 0; i < reg.Length; i++)
+            log.Append($" {i,3} ");
+        log.AppendLine("|");
+
+
+        log.Append("    ----+");
+        for (int i = 0; i < reg.Length; i++)
+            log.Append("----");
+        log.AppendLine("+");
+
+
+        log.Append("    val |");
+        for (int i = 0; i < reg.Length; i++)
+            log.Append($" {reg[i],3} ");
+        log.AppendLine("|");
+
+
+        if (highlightTaps)
+        {
+            log.Append("    tap |");
+            for (int i = 0; i < reg.Length; i++)
+            {
+                bool isTap = Array.IndexOf(taps, i) >= 0;
+                log.Append(isTap ? "  ^ " : "    ");
+            }
+            log.AppendLine("|");
+        }
+
+        log.AppendLine();
+        log.AppendLine($"    Битовая строка: {FormatBits(reg)}");
+    }
+
+
+    private static void AppendShiftDiagram(StringBuilder log, int[] reg, int feedback)
+    {
+        log.AppendLine("    ┌── Диаграмма сдвига ──────────────────────────────────");
+        log.AppendLine($"    │ было:  {FormatBits(reg)}   (R[0]={reg[0]} выпадает)");
+
+
+        log.Append("    │ сдвиг: ");
+        for (int i = 0; i < reg.Length; i++)
+            log.Append(" ←  ");
+        log.AppendLine();
+
+        log.AppendLine($"    │ ОС:    {feedback}  (подаётся в последний разряд)");
+        log.AppendLine("    └──────────────────────────────────────────────────────");
+    }
+
+    private static string FormatBits(int[] reg)
+    {
+        var sb = new StringBuilder(reg.Length + 2);
+        sb.Append('[');
+        for (int i = 0; i < reg.Length; i++)
+        {
+            sb.Append(reg[i]);
+            if (i < reg.Length - 1) sb.Append(' ');
+        }
+        sb.Append(']');
+        return sb.ToString();
+    }
 }

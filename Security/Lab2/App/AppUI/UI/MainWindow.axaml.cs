@@ -171,6 +171,10 @@ public partial class MainWindow : Window
             return;
         }
         _step++;
+        if(_step >= _encoding.Count)
+        {
+            return;
+        }
         EncodingText.Text = new string(_encoding[_step]);
         UpdateUI();
     }

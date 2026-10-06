@@ -7,12 +7,11 @@ namespace CesarKeyWord
     {
         public static void Main(string[] args)
         {
-            
 
-            var encryptor = new MainEncryptor();
 
-          
+            var encryptor = new CesarEncoder();
 
+            encryptor.Encrypt();
           
         }
     }

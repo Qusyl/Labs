@@ -24,6 +24,23 @@ namespace Source.FileSystem
             return path;
         }
 
+        public static string PathTap5()
+        {
+            var directory = PathDirectory();
+
+            var path = Path.Combine(directory, "Secrets", "taps.txt");
+
+            return path;
+        }
+        public static string PathTap17()
+        {
+            var directory = PathDirectory();
+
+            var path = Path.Combine(directory, "Secrets", "taps.txt");
+
+            return path;
+        }
+
         public static string PathToDecrypted()
         {
             var directory = PathDirectory();
@@ -76,9 +93,7 @@ namespace Source.FileSystem
             {
                 dir = dir?.Parent;
             } while (dir != null && dir.EnumerateFiles("*.sln").Any());
-
-            System.Console.WriteLine($"!!!SLN!!!! - {dir?.FullName}");
-
+            
             return dir?.FullName ?? throw new DirectoryNotFoundException("Not found slnx directory");
         }
     }  

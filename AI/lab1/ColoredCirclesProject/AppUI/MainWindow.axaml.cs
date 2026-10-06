@@ -15,6 +15,8 @@ namespace AppUI
     using Source.Model;
     using Avalonia.Controls.Shapes;
     using Source.Analyse;
+    using System.Text;
+    using System.IO;
 
     public partial class MainWindow : Window
     {
@@ -79,6 +81,14 @@ namespace AppUI
 
             _solution = _engine.Play();
 
+            var sb = new StringBuilder();
+
+            foreach(var sol in _solution)
+            {
+                string rotate = sol.direction == 1 ? "право ->" : " <- лево";
+                sb.Append($"{sol.ringName} повернулась на {rotate}\n");
+            }
+            File.WriteAllText("founded_path.txt", sb.ToString());
             AnalyzeSaver.SaveAnalyse(_engine.GetReport());
 
            

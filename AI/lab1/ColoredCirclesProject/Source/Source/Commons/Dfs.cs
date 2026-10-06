@@ -9,7 +9,7 @@ namespace Source.Common
     {
         private HashSet<string> _visited { get; set; } = new();
         private HashSet<string> _closed { get; set; } = new();
-        private int MaxDepth = 10;
+       
 
         private int _iterations = 0;
         private int _maxOpenSize = 0;
