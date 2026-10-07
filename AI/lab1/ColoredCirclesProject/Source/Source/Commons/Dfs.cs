@@ -10,13 +10,13 @@ namespace Source.Common
         private HashSet<string> _visited { get; set; } = new();
         private HashSet<string> _closed { get; set; } = new();
        
-
+       
         private int _iterations = 0;
         private int _maxOpenSize = 0;
         private int _maxTotalSize = 0;
         private bool isFoundTheWay = false;
         private readonly GameContext _context;
-        private Stack<State> _possibleWays { get; set; } = new();
+        private Stack<(State state, int depth)> _possibleWays { get; set; } = new();
 
         private Dictionary<string, (string parentKey, string ringName, int direction)> _parent = new();
 
@@ -27,7 +27,7 @@ namespace Source.Common
 
             var startKey = ColorToString(_context.InputData.StartState);
             _visited.Add(startKey);
-            _possibleWays.Push((_context.InputData.StartState));
+            _possibleWays.Push((_context.InputData.StartState, 1));
 
         }
         private string ColorToString(State state)
@@ -60,34 +60,57 @@ namespace Source.Common
         }
         public List<(string ringName, int direction)> FindWay()
         {
-            // var startDepth = 1;
-            // var maxDepth = 50;
-            // while (startDepth <= maxDepth)
-            // {
-            //     _visited.Clear();
-            //     _possibleWays.Clear();
-            //     _visited.Add(ColorToString(_context.InputData.StartState));
-            //     _possibleWays.Push((_context.InputData.StartState, new()));
-            //     var result = FindWayWithMaxDepth();
-            //     if (result != null)
-            //     {
-            //         return result;
-            //     }
-            //     startDepth += 1;
-            // }
+            var startDepth = 1;
+            var maxDepth = 50;
+            while (startDepth <= maxDepth)
+            {
+                Reset();               
+                var start = _context.InputData.StartState;
+                _visited.Add(ColorToString(start));
+                _possibleWays.Push((start, 0));
+                var result = FindWayWithMaxDepth(startDepth);
+                if (result != null && result.Count > 0)
+                {
+                    return result;
+                }
+                startDepth += 1;
+
+            }
+
+            return [];
+        }
+        private void Reset()
+        {
+            _visited.Clear();
+            _possibleWays.Clear();
+            _parent.Clear();
+            isFoundTheWay = false;
+        }
+        private List<(string ringName, int direction)> FindWayWithMaxDepth(int depthLimit)
+        {
+
             while (_possibleWays.Count > 0 && !isFoundTheWay)
             {
                 _iterations++;
                 _maxOpenSize = Math.Max(_maxOpenSize, _possibleWays.Count);
                 _maxTotalSize = Math.Max(_maxTotalSize, _possibleWays.Count + _closed.Count);
                 var currentState = _possibleWays.Pop();
-                 
+                
 
-                var currKey = ColorToString(currentState);
+                var currKey = ColorToString(currentState.state);
+                
+                if(currentState.depth > depthLimit)
+                {
+                    continue;
+                }
 
-                if (IsTarget(currentState))
+                if (IsTarget(currentState.state))
                 {
                     return BuildPath(currKey);
+                }
+                if(currentState.depth == depthLimit)
+                {
+                    continue;
                 }
 
                 _closed.Add(currKey);
@@ -96,14 +119,14 @@ namespace Source.Common
 
                 foreach (var action in possibleActions)
                 {
-                    var stateAfterRotate = Rotate(currentState, action.ringName, action.direction);
+                    var stateAfterRotate = Rotate(currentState.state, action.ringName, action.direction);
                     var keyAfterRotate = ColorToString(stateAfterRotate);
 
                     if (!_visited.Contains(keyAfterRotate))
                     {
                         _visited.Add(keyAfterRotate);
                         _parent[keyAfterRotate] = (currKey, action.ringName, action.direction);
-                        _possibleWays.Push(stateAfterRotate);
+                        _possibleWays.Push((stateAfterRotate, currentState.depth++));
                     }
                 }
             }

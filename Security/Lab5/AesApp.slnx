@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="AppUI/AppUI.csproj" />
+  <Project Path="Source/Source.csproj" />
+</Solution>
