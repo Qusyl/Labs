@@ -1,9 +1,279 @@
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="AppUI.MainWindow"
-        Title="AppUI">
-    Welcome to Avalonia!
+<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="AppUI.MainWindow"
+    Title="AES-128 Visualizer"
+    Width="1400"
+    Height="900"
+    MinWidth="1200"
+    MinHeight="700"
+    RequestedThemeVariant="Dark"
+    Background="#1E1E1E">
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto"
+          Margin="20">
+
+        <!-- ====================== HEADER ====================== -->
+        <Border Grid.Row="0"
+                Background="#252526"
+                CornerRadius="10"
+                Padding="20"
+                Margin="0,0,0,15">
+
+            <StackPanel>
+                <TextBlock Text="AES-128 Visualizer"
+                           FontSize="28"
+                           FontWeight="Bold"/>
+
+                <TextBlock Text="Пошаговая демонстрация одного раунда AES-128"
+                           Foreground="#AAAAAA"
+                           Margin="0,5,0,0"/>
+            </StackPanel>
+        </Border>
+
+
+        <!-- ====================== INPUT ====================== -->
+        <Border Grid.Row="1"
+                Background="#252526"
+                CornerRadius="10"
+                Padding="20"
+                Margin="0,0,0,15">
+
+            <Grid RowDefinitions="Auto,Auto,Auto"
+                  ColumnDefinitions="*,Auto"
+                  RowSpacing="10">
+
+                <!-- TEXT -->
+                <StackPanel Grid.Row="0"
+                            Grid.Column="0">
+
+                    <TextBlock Text="Текст"
+                               FontWeight="Bold"
+                               Margin="0,0,0,5"/>
+
+                    <TextBox x:Name="TextInput"
+                             Watermark="Введите любой текст..."
+                             FontSize="15"
+                             Height="40"/>
+                </StackPanel>
+
+                <!-- KEY -->
+                <StackPanel Grid.Row="1"
+                            Grid.Column="0"
+                            Margin="0,10,0,0">
+
+                    <TextBlock Text="AES-128 ключ (загружен из файла) — 16 байт / 32 hex символа"
+                               FontWeight="Bold"
+                               Margin="0,0,0,5"/>
+
+                    <TextBox x:Name="KeyInput"
+                             IsReadOnly="True"
+                             Watermark="Ключ загружается из файла"
+                             FontFamily="Consolas, Cascadia Mono, Menlo, DejaVu Sans Mono, monospace"
+                             FontSize="15"
+                             Height="40"/>
+                </StackPanel>
+
+                <!-- BUTTON -->
+                <Button Grid.Row="0"
+                        Grid.RowSpan="2"
+                        Grid.Column="1"
+                        x:Name="EncryptButton"
+                        Content="Зашифровать"
+                        Click="EncryptButton_Click"
+                        Width="170"
+                        Height="50"
+                        Margin="20,15,0,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"/>
+
+                <!-- STATUS -->
+                <TextBlock Grid.Row="2"
+                           Grid.Column="0"
+                           x:Name="InputStatus"
+                           Foreground="#AAAAAA"
+                           Margin="0,10,0,0"/>
+            </Grid>
+        </Border>
+
+
+        <!-- ====================== MAIN ====================== -->
+        <Grid Grid.Row="2"
+              ColumnDefinitions="220,*,430"
+              ColumnSpacing="15">
+
+            <!-- ============ STEPS ============ -->
+            <Border Grid.Column="0"
+                    Background="#252526"
+                    CornerRadius="10"
+                    Padding="15">
+
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="Этапы"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   Margin="0,0,0,15"/>
+
+                        <StackPanel x:Name="StepsPanel"
+                                    Spacing="8"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+
+            <!-- ============ MATRICES ============ -->
+            <Border Grid.Column="1"
+                    Background="#252526"
+                    CornerRadius="10"
+                    Padding="25">
+
+                <Grid RowDefinitions="Auto,*,Auto">
+
+                    <StackPanel Grid.Row="0"
+                                HorizontalAlignment="Center">
+
+                        <TextBlock x:Name="BlockTitle"
+                                   Text="Блок 1"
+                                   FontSize="16"
+                                   Foreground="#AAAAAA"
+                                   HorizontalAlignment="Center"/>
+
+                        <TextBlock x:Name="StepTitle"
+                                   Text="AES"
+                                   FontSize="27"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,5,0,0"/>
+
+                        <TextBlock x:Name="StepDescription"
+                                   Text="Введите текст и нажмите «Зашифровать»."
+                                   TextWrapping="Wrap"
+                                   TextAlignment="Center"
+                                   Foreground="#AAAAAA"
+                                   MaxWidth="600"
+                                   Margin="0,8,0,15"/>
+                    </StackPanel>
+
+                    <Viewbox Grid.Row="1"
+                             Stretch="Uniform"
+                             StretchDirection="DownOnly">
+
+                        <StackPanel x:Name="MatricesPanel"
+                                    Orientation="Horizontal"
+                                    Spacing="14"
+                                    VerticalAlignment="Center"/>
+                    </Viewbox>
+
+                    <StackPanel Grid.Row="2"
+                                HorizontalAlignment="Center"
+                                Margin="0,15,0,0">
+
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+
+                            <Button x:Name="PreviousBlockButton"
+                                    Content="← Блок"
+                                    Click="PreviousBlockButton_Click"
+                                    Padding="15,8"
+                                    Margin="0,0,10,0"
+                                    IsEnabled="False"/>
+
+                            <TextBlock x:Name="BlockProgressText"
+                                       Text="Блок 0 / 0"
+                                       VerticalAlignment="Center"
+                                       Margin="10,0"/>
+
+                            <Button x:Name="NextBlockButton"
+                                    Content="Блок →"
+                                    Click="NextBlockButton_Click"
+                                    Padding="15,8"
+                                    Margin="10,0,0,0"
+                                    IsEnabled="False"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+
+            <!-- ============ DETAILS ============ -->
+            <Border Grid.Column="2"
+                    Background="#252526"
+                    CornerRadius="10"
+                    Padding="20">
+
+                <ScrollViewer x:Name="DetailsScroll"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+
+                        <TextBlock Text="Что происходит"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   Margin="0,0,0,12"/>
+
+                        <TextBlock x:Name="DetailsText"
+                                   TextWrapping="Wrap"
+                                   FontSize="14"
+                                   Foreground="#CCCCCC"
+                                   Text="Здесь будет описание текущей операции."/>
+
+                        <Border Background="#1E1E1E"
+                                CornerRadius="8"
+                                Padding="12"
+                                Margin="0,20,0,0">
+
+                            <StackPanel>
+                                <TextBlock Text="Расчёт на ваших данных"
+                                           FontWeight="Bold"
+                                           Margin="0,0,0,8"/>
+
+                                <TextBlock x:Name="TraceText"
+                                           FontFamily="Consolas, Cascadia Mono, Menlo, DejaVu Sans Mono, monospace"
+                                           FontSize="12"
+                                           TextWrapping="Wrap"
+                                           Foreground="#B5CEA8"/>
+                            </StackPanel>
+                        </Border>
+
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+        </Grid>
+
+
+        <!-- ====================== FOOTER ====================== -->
+        <Border Grid.Row="3"
+                Background="#252526"
+                CornerRadius="10"
+                Padding="15"
+                Margin="0,15,0,0">
+
+            <Grid ColumnDefinitions="Auto,*,Auto">
+
+                <Button x:Name="PreviousStepButton"
+                        Grid.Column="0"
+                        Content="← Назад"
+                        Click="PreviousStepButton_Click"
+                        Padding="30,10"
+                        IsEnabled="False"/>
+
+                <TextBlock x:Name="ProgressText"
+                           Grid.Column="1"
+                           Text="0 / 0"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontSize="16"/>
+
+                <Button x:Name="NextStepButton"
+                        Grid.Column="2"
+                        Content="Далее →"
+                        Click="NextStepButton_Click"
+                        Padding="30,10"
+                        IsEnabled="False"/>
+            </Grid>
+        </Border>
+
+    </Grid>
+
 </Window>
