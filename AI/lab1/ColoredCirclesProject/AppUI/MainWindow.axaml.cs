@@ -32,6 +32,8 @@ namespace AppUI
 
         private bool _isAutoPlaying;
 
+        
+
         private readonly Ellipse[] _ballVisuals = new Ellipse[8];
 
         private const double BallRadius = 25;
