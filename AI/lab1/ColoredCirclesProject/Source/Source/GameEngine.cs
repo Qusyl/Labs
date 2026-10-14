@@ -17,7 +17,7 @@
 
             Context = new GameContext(geometry, inputs);
 
-            _graph = new Dfs(Context);
+            _graph = new Dfs(Context, true);
         }
 
         public List<(string ringName, int direction)> Play()

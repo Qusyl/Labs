@@ -10,25 +10,29 @@ namespace Source.Common
         private HashSet<string> _visited { get; set; } = new();
         private HashSet<string> _closed { get; set; } = new();
        
-       
+        private int _maxBallsCount;
         private int _iterations = 0;
         private int _maxOpenSize = 0;
         private int _maxTotalSize = 0;
         private bool isFoundTheWay = false;
+        private bool _useSecondHeuristic = false;
         private readonly GameContext _context;
-        private Stack<(State state, int depth)> _possibleWays { get; set; } = new();
+        // private Stack<(State state, int depth)> _possibleWays { get; set; } = new();
+        private PriorityQueue<(State state, int g), int> _possibleWays { get; set; } = new(); // (s, g), f, где ф - приор
+        private Dictionary<string, int> _bestG { get; set; } = new();
+        private readonly Dictionary<AppColors, Dictionary<string, int>> _patternDistances = new();
 
         private Dictionary<string, (string parentKey, string ringName, int direction)> _parent = new();
 
-        public Dfs(GameContext context)
+        public Dfs(GameContext context, bool useSecondHeurist = false)
         {
-
             _context = context;
-
-            var startKey = ColorToString(_context.InputData.StartState);
-            _visited.Add(startKey);
-            _possibleWays.Push((_context.InputData.StartState, 1));
-
+            _maxBallsCount = context.Geometry.Rings.First().Positions.Length;
+            _useSecondHeuristic = useSecondHeurist;
+            foreach(var color in _context.InputData.TargetState.Balls.Select(b => b.Color).Distinct())
+            {
+                _patternDistances[color] = BuildPatternDistance(color);
+            }
         }
         private string ColorToString(State state)
         {
@@ -60,78 +64,214 @@ namespace Source.Common
         }
         public List<(string ringName, int direction)> FindWay()
         {
-            var startDepth = 1;
-            var maxDepth = 50;
-            while (startDepth <= maxDepth)
+            Reset();
+
+            State start = _context.InputData.StartState;
+
+            string startKey = ColorToString(start);
+
+            int startG = 0;
+
+            int startH = CalculateHeuristic(start);
+
+            int startF = startG + startH;
+
+            _bestG[startKey] = startG;
+
+            _visited.Add(startKey);
+
+            _possibleWays.Enqueue((start, startG), startF);
+
+            while (_possibleWays.Count > 0)
             {
-                Reset();               
-                var start = _context.InputData.StartState;
-                _visited.Add(ColorToString(start));
-                _possibleWays.Push((start, 0));
-                var result = FindWayWithMaxDepth(startDepth);
-                if (result != null && result.Count > 0)
+                _iterations++;
+
+                var currentNode = _possibleWays.Dequeue();
+
+                var currentState = currentNode.state;
+
+                string currentKey = ColorToString(currentState);
+
+                int currentG = currentNode.g;
+
+                _maxOpenSize = Math.Max(
+               _maxOpenSize,
+               _possibleWays.Count + 1);
+
+                _maxTotalSize = Math.Max(
+                _maxTotalSize,
+                _possibleWays.Count + _closed.Count + 1);
+
+                if (_bestG.TryGetValue(currentKey, out var bestG) && currentG != bestG)
                 {
-                    return result;
+                    continue; 
                 }
-                startDepth += 1;
+
+                if (IsTarget(currentState))
+                {
+                    return BuildPath(currentKey);
+                }
+
+                _closed.Add(currentKey);
+
+                foreach (var action in GetPossibleActions())
+                {
+                    State nextState = Rotate(
+                            currentState,
+                            action.ringName,
+                            action.direction
+                    );
+
+                    string nextKey = ColorToString(nextState);
+
+                    int newG = currentG + 1;
+
+                    if (_bestG.TryGetValue(nextKey, out var prevG) && prevG <= newG)
+                    {
+                        continue;
+                    }
+
+                    _bestG[nextKey] = newG;
+                    _visited.Add(nextKey);
+                    _parent[nextKey] = (currentKey, action.ringName, action.direction);
+
+                    int newH = CalculateHeuristic(nextState);
+
+                    int newF = newH + newG;
+
+                    _possibleWays.Enqueue((nextState, newG), newF);
+
+                    _maxOpenSize = Math.Max(
+                        _maxOpenSize,
+                        _possibleWays.Count);
+
+                    _maxTotalSize = Math.Max(
+                        _maxTotalSize,
+                        _possibleWays.Count + _closed.Count);
+                }
+
+
+            }
+            return [];
 
             }
 
-            return [];
-        }
         private void Reset()
+    {
+        _visited.Clear();
+        _closed.Clear();
+        _possibleWays.Clear();
+        _bestG.Clear();
+        _parent.Clear();
+
+        _iterations = 0;
+        _maxOpenSize = 0;
+        _maxTotalSize = 0;
+
+        isFoundTheWay = false;
+    }
+        private string GetColorPattern(State state, AppColors color)
         {
-            _visited.Clear();
-            _possibleWays.Clear();
-            _parent.Clear();
-            isFoundTheWay = false;
+            return string.Concat(state.Balls.Select(ball => ball.Color == color ? '1' : '0'));
         }
-        private List<(string ringName, int direction)> FindWayWithMaxDepth(int depthLimit)
+
+        private Dictionary<string, int> BuildPatternDistance(AppColors color)
         {
 
-            while (_possibleWays.Count > 0 && !isFoundTheWay)
+            var distance = new Dictionary<string, int>();
+
+            var queue = new Queue<string>();
+
+            string targetPattern = GetColorPattern(_context.InputData.TargetState, color);
+
+            distance[targetPattern] = 0;
+            queue.Enqueue(targetPattern);
+
+            while (queue.Count > 0)
             {
-                _iterations++;
-                _maxOpenSize = Math.Max(_maxOpenSize, _possibleWays.Count);
-                _maxTotalSize = Math.Max(_maxTotalSize, _possibleWays.Count + _closed.Count);
-                var currentState = _possibleWays.Pop();
-                
+                var current = queue.Dequeue();
 
-                var currKey = ColorToString(currentState.state);
-                
-                if(currentState.depth > depthLimit)
+                int currentDistance = distance[current];
+
+                foreach (var ring in _context.Geometry.Rings)
                 {
-                    continue;
-                }
-
-                if (IsTarget(currentState.state))
-                {
-                    return BuildPath(currKey);
-                }
-                if(currentState.depth == depthLimit)
-                {
-                    continue;
-                }
-
-                _closed.Add(currKey);
-
-                List<(string ringName, int direction)> possibleActions = GetPossibleActions();
-
-                foreach (var action in possibleActions)
-                {
-                    var stateAfterRotate = Rotate(currentState.state, action.ringName, action.direction);
-                    var keyAfterRotate = ColorToString(stateAfterRotate);
-
-                    if (!_visited.Contains(keyAfterRotate))
+                    foreach (int direction in new[] { 1, -1 })
                     {
-                        _visited.Add(keyAfterRotate);
-                        _parent[keyAfterRotate] = (currKey, action.ringName, action.direction);
-                        _possibleWays.Push((stateAfterRotate, currentState.depth++));
+                        string next = RotatePattern(current, ring.Positions, direction);
+
+                        if (distance.ContainsKey(next))
+                        {
+                            continue;
+                        }
+
+                        distance[next] = currentDistance + 1;
+                        queue.Enqueue(next);
                     }
                 }
             }
-            return [];
+
+            return distance;
         }
+
+        private string RotatePattern(string pattern, int[] pos, int direction)
+        {
+            var result = pattern.ToCharArray();
+
+            int count = pos.Length;
+
+            for (int i = 0; i < count; i++)
+            {
+                int sourceIndex = (i - direction + count) % count;
+
+                result[pos[i]] = pattern[pos[sourceIndex]];
+            }
+
+            return new string(result);
+        }
+        
+        private int CalculateHeuristic(State state)
+        {
+            return _useSecondHeuristic ?
+            CalculateHeuristic_2(state) :
+            CalculateHeuristic_1(state);
+        }
+        private int CalculateHeuristic_2(State state)
+        {
+            int maxDistance = 0;
+
+            foreach (var (color, distances) in _patternDistances)
+            {
+                string pattern = GetColorPattern(state, color);
+
+                if (distances.TryGetValue(pattern, out int distance))
+                {
+                    maxDistance = Math.Max(distance, maxDistance);
+                }
+            }
+
+            return maxDistance;
+        }
+
+       
+        private int CalculateHeuristic_1(State state)
+        {
+            State target = _context.InputData.TargetState;
+
+            int missplaced = 0;
+
+            for (int i = 0; i < state.Balls.Length; i++)
+            {
+                if (target.Balls[i].Color != state.Balls[i].Color)
+                {
+                    missplaced++;
+                }
+            }
+
+            return (missplaced + _maxBallsCount - 1) / _maxBallsCount; // дабы вверх округлялось число
+
+        }
+
+   
         private List<(string ringName, int direction)> BuildPath(string targetKey)
         {
             var path = new List<(string ringName, int direction)>();
