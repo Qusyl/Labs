@@ -1,0 +1,89 @@
+
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="AppUI.MainWindow"
+        Title="ЭЦП Эль-Гамаля"
+        Width="1000"
+        Height="650"
+        MinWidth="800"
+        MinHeight="500"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid ColumnDefinitions="*,*" Margin="20">
+       
+        <Border Grid.Column="0"
+                BorderBrush="#64748B"
+                BorderThickness="1"
+                CornerRadius="10"
+                Padding="16"
+                Margin="0,0,10,0">
+
+            <StackPanel Spacing="12">
+                <TextBlock Text="Отправитель"
+                           FontSize="24"
+                           FontWeight="Bold"/>
+
+                <TextBlock Text="Введите сообщение:"/>
+
+                <TextBox x:Name="SenderMessage"
+                         AcceptsReturn="True"
+                         TextWrapping="Wrap"
+                         MinHeight="150"
+                         Watermark="Ваше сообщение..."/>
+
+                <Button Content="Подписать сообщение"
+                        Click="SignButton_Click"/>
+
+                <TextBlock Text="Цифровая подпись (a, b):"
+                           FontWeight="SemiBold"/>
+
+                <TextBox x:Name="SignatureText"
+                         IsReadOnly="True"
+                         Watermark="Здесь появится подпись"/>
+
+                <Button Content="Передать получателю"
+                        Click="SendButton_Click"/>
+
+                <TextBlock x:Name="SenderStatus"
+                           TextWrapping="Wrap"/>
+            </StackPanel>
+        </Border>
+
+      
+        <Border Grid.Column="1"
+                BorderBrush="#64748B"
+                BorderThickness="1"
+                CornerRadius="10"
+                Padding="16"
+                Margin="10,0,0,0">
+
+            <StackPanel Spacing="12">
+                <TextBlock Text="Получатель"
+                           FontSize="24"
+                           FontWeight="Bold"/>
+
+                <TextBlock Text="Полученное сообщение:"/>
+
+                <TextBox x:Name="ReceiverMessage"
+                         AcceptsReturn="True"
+                         TextWrapping="Wrap"
+                         MinHeight="150"
+                         Watermark="Ожидание сообщения..."/>
+
+                <TextBlock Text="Полученная подпись (a, b):"
+                           FontWeight="SemiBold"/>
+
+                <TextBox x:Name="ReceiverSignature"
+                         Watermark="Например: 123 45"/>
+
+                <Button Content="Проверить подпись"
+                        Click="VerifyButton_Click"/>
+
+                <TextBlock x:Name="VerifyStatus"
+                           FontSize="16"
+                           FontWeight="SemiBold"
+                           TextWrapping="Wrap"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

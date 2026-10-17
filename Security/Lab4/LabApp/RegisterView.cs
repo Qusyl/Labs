@@ -47,7 +47,9 @@ public class RegisterView : Control
             bool last = i == n - 1;
             ctx.DrawRectangle(last ? Brushes.MistyRose : Brushes.White, last ? red : pen, rect);
             Label(ctx, st.State[i].ToString(), 20, X(i) + cw / 2, midY, Brushes.Black);
+
             Label(ctx, $"r{i + 1}", 11, X(i) + cw / 2, Top - 11, Brushes.Gray);
+            if (i == 0 && st.State.Length >= 17 && st.Index > 1) Label(ctx, $"ВЫХОД ГАММЫ", 11, X(i) + cw / 2, Top - 11, Brushes.Black);
             if (i < n - 1) Arrow(ctx, pen, X(i) + cw, midY, X(i + 1), midY);
         }
 

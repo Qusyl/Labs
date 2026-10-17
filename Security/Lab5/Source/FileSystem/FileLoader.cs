@@ -26,5 +26,25 @@ namespace Source.FileSystem
             }
             return sbox;
         }
+        public static byte[] LoadKey(string path = "/home/denis/Documents/Labs/Security/Lab5/Source/Secrets/key.txt")
+        {
+            if (!File.Exists(path))
+                throw new FileNotFoundException($"key file not found: {path}");
+
+            string content = File.ReadAllText(path);
+            string[] tokens = content.Split(
+                new[] { ' ', '\t', '\r', '\n' },
+                StringSplitOptions.RemoveEmptyEntries);
+
+            if (tokens.Length != 16)
+                throw new InvalidDataException($"Key должен содержать  16 чисел, получено {tokens.Length}");
+
+            byte[] key = new byte[16];
+            for (int i = 0; i < 16; i++)
+            {
+                key[i] = Convert.ToByte(tokens[i], 16);
+            }
+            return key;
+        }
     }
 }

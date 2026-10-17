@@ -51,7 +51,7 @@ public partial class MainWindow : Window
 
                     gamma[i] = subs[^1].Out;
 
-                    if (i < 5)
+                    if (i < gamma.Length)
                     {
                          string sumFormula =
         $";  сумма разрядов {string.Concat(a.State)} = {string.Join("⊕", a.State)} = {parity}";

@@ -16,9 +16,7 @@ public partial class MainWindow : Window
     private const string MonoFont =
         "Consolas, Cascadia Mono, Menlo, DejaVu Sans Mono, monospace";
 
-    // true  — файл ключа записан матрицей по 4 байта в строке (как в вашем файле),
-    //         тогда байты нужно транспонировать, чтобы получить порядок AES (по столбцам).
-    // false — LoadKey() уже возвращает ключ в линейном порядке AES.
+    
     private const bool KeyFileIsRowMajor = true;
 
     private class BlockData
@@ -53,10 +51,6 @@ public partial class MainWindow : Window
     }
 
 
-    // ======================================================
-    //  КЛЮЧ
-    // ======================================================
-
     private byte[] LoadKey()
     {
         byte[] fileKey = FileLoader.LoadKey();
@@ -77,9 +71,7 @@ public partial class MainWindow : Window
     }
 
 
-    // ======================================================
-    //  ШИФРОВАНИЕ
-    // ======================================================
+  
 
     private void EncryptButton_Click(object? sender, RoutedEventArgs e)
     {
@@ -150,10 +142,6 @@ public partial class MainWindow : Window
     }
 
 
-    // ======================================================
-    //  НАВИГАЦИЯ
-    // ======================================================
-
     private void NextStepButton_Click(object? sender, RoutedEventArgs e)
     {
         if (!HasData())
@@ -203,10 +191,7 @@ public partial class MainWindow : Window
     }
 
 
-    // ======================================================
-    //  ОТОБРАЖЕНИЕ ШАГА
-    // ======================================================
-
+ 
     private void ShowCurrentStep()
     {
         if (!HasData())
@@ -239,10 +224,7 @@ public partial class MainWindow : Window
     }
 
 
-    // ======================================================
-    //  МАТРИЦЫ
-    // ======================================================
-
+    
     private void ShowEmptyMatrix()
     {
         MatricesPanel.Children.Clear();
@@ -270,7 +252,7 @@ public partial class MainWindow : Window
             }
         }
 
-        // ячейки, изменившиеся относительно "До", подсвечиваются
+       
         MatricesPanel.Children.Add(BuildMatrix(step.AfterLabel, step.State, step.Before));
     }
 
@@ -351,9 +333,6 @@ public partial class MainWindow : Window
     }
 
 
-    // ======================================================
-    //  СПИСОК ШАГОВ, ПРОГРЕСС, КНОПКИ
-    // ======================================================
 
     private void UpdateStepList()
     {
@@ -444,9 +423,7 @@ public partial class MainWindow : Window
     }
 
 
-    // ======================================================
-    //  СТАТУС
-    // ======================================================
+ 
 
     private void ShowStatus(string message, bool isError = false)
     {

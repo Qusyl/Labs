@@ -9,8 +9,6 @@ public class Lfsr
     private readonly int[] _s;
     private readonly int[] _taps;
     private int _tick;
-
-    
     public Lfsr(int[] init, int[] tapIndices)
     {
         int n = init.Length;
@@ -43,6 +41,6 @@ public class Lfsr
         _s[0] = fb;
 
         string formula = $"{string.Join("⊕", names)} = {string.Join("⊕", vals)} = {fb}";
-        return new TickStep(++_tick, before, _taps, fb, before[n - 1], (int[])_s.Clone(), formula);
+        return new TickStep(++_tick, before, _taps, fb, before[0], (int[])_s.Clone(), formula);
     }
 }
