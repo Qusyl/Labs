@@ -1,0 +1,56 @@
+<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="AppUI.MainWindow"
+    Width="1100"
+    Height="750"
+    Title="Colored Rings Puzzle">
+
+    <Grid RowDefinitions="*,Auto">
+
+        <Canvas
+            x:Name="GameCanvas"
+            Background="#202020" />
+
+        <Border
+            Grid.Row="1"
+            Padding="15"
+            Background="#303030">
+
+            <StackPanel
+                Orientation="Horizontal"
+                HorizontalAlignment="Center"
+                Spacing="15">
+
+                <Button
+                    x:Name="PreviousButton"
+                    Content="◀ Назад"
+                    Padding="20,10"
+                    Click="PreviousButton_OnClick" />
+
+                <Button
+                    x:Name="NextButton"
+                    Content="Следующий ▶"
+                    Padding="20,10"
+                    Click="NextButton_OnClick" />
+
+                <Button
+                    x:Name="AutoButton"
+                    Content="▶ Автоматически"
+                    Padding="20,10"
+                    Click="AutoButton_OnClick" />
+
+                <TextBlock
+                    x:Name="StepText"
+                    VerticalAlignment="Center"
+                    Foreground="White"
+                    FontSize="18"
+                    Margin="20,0,0,0" />
+
+            </StackPanel>
+
+        </Border>
+
+    </Grid>
+
+</Window>

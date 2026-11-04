@@ -267,7 +267,7 @@ namespace Source.Common
                 }
             }
 
-            return (missplaced + _maxBallsCount - 1) / _maxBallsCount; // дабы вверх округлялось число
+            return (missplaced + _maxBallsCount - 1) / _maxBallsCount; 
 
         }
 
