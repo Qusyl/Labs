@@ -10,12 +10,12 @@
 
         <Canvas
             x:Name="GameCanvas"
-            Background="#202020" />
+            Background="#F1EEEE" />
 
         <Border
             Grid.Row="1"
             Padding="15"
-            Background="#303030">
+            Background="#F5EBF2">
 
             <StackPanel
                 Orientation="Horizontal"
@@ -26,24 +26,27 @@
                     x:Name="PreviousButton"
                     Content="◀ Назад"
                     Padding="20,10"
+                    Background="#D6F5F5F5"
                     Click="PreviousButton_OnClick" />
 
                 <Button
                     x:Name="NextButton"
                     Content="Следующий ▶"
                     Padding="20,10"
+                    Background="#D6F5F5F5"
                     Click="NextButton_OnClick" />
 
                 <Button
                     x:Name="AutoButton"
                     Content="▶ Автоматически"
                     Padding="20,10"
+                    Background="#D6F5F5F5"
                     Click="AutoButton_OnClick" />
 
                 <TextBlock
                     x:Name="StepText"
                     VerticalAlignment="Center"
-                    Foreground="White"
+                    Foreground="#751D81"
                     FontSize="18"
                     Margin="20,0,0,0" />
 

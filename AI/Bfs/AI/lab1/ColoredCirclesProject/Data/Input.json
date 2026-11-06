@@ -2,12 +2,6 @@
   "Start": {
     "Balls": [
       {
-        "Color": "Purple"
-      },
-      {
-        "Color": "Cyan"
-      },
-      {
         "Color": "Red"
       },
       {
@@ -23,6 +17,21 @@
         "Color": "Purple"
       },
       {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Cyan"
+      },
+       {
         "Color": "Cyan"
       }
     ]
@@ -30,19 +39,28 @@
   "Target": {
     "Balls": [
       {
-        "Color": "Purple"
-      },
-      {
-        "Color": "Purple"
-      },
-      {
-        "Color": "Purple"
+        "Color": "Red"
       },
       {
         "Color": "Red"
       },
       {
         "Color": "Red"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Cyan"
       },
       {
         "Color": "Cyan"

@@ -2,27 +2,40 @@ namespace AppUI
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
     using System.Threading.Tasks;
 
     using Avalonia;
     using Avalonia.Controls;
+    using Avalonia.Controls.Shapes;
     using Avalonia.Interactivity;
     using Avalonia.Media;
-  
 
     using Source;
+    using Source.Analyse;
     using Source.Common;
     using Source.Model;
-    using Avalonia.Controls.Shapes;
-    using Source.Analyse;
-    using System.Text;
-    using System.IO;
 
     public partial class MainWindow : Window
     {
+        private const double BallRadius = 25;
+
         private readonly GameEngine _engine;
 
         private readonly List<(string ringName, int direction)> _solution;
+
+        // Топология: имя кольца -> позиции в порядке обхода (из Inputes json)
+        private readonly Dictionary<string, int[]> _ringPositions;
+
+        // Данные для рисования: центр, радиус, цвет, направление
+        private readonly Dictionary<string, RingView> _rings;
+
+        // Координаты позиций, считаются автоматически
+        private readonly Point[] _positions;
+
+        private readonly Ellipse?[] _ballVisuals;
 
         private State _currentState;
 
@@ -32,79 +45,55 @@ namespace AppUI
 
         private bool _isAutoPlaying;
 
-        
-
-        private readonly Ellipse[] _ballVisuals = new Ellipse[8];
-
-        private const double BallRadius = 25;
-
-        private const double RingRadius = 150;
-
-        
-        private readonly Dictionary<string, Point> _ringCenters =
-            new()
-            {
-                ["Red"] = new Point(300, 360),
-                ["Yellow"] = new Point(500, 360),
-                ["White"] = new Point(700, 360)
-            };
-
-        
-        private readonly Point[] _positions =
-[
-    new Point(185.1, 456.4),  
-    new Point(185.1, 263.6),  
-
-    new Point(400.0, 248.2),  
-    new Point(400.0, 471.8),  
-
-    new Point(600.0, 471.8),  
-    new Point(600.0, 248.2), 
-
-    new Point(814.9, 263.6),  
-    new Point(814.9, 456.4)   
-];
-       
-        private readonly Dictionary<string, int[]> _ringPositions =
-            new()
-            {
-                ["Red"] = [0, 1, 2, 3],
-                ["Yellow"] = [2, 3, 4, 5],
-                ["White"] = [4, 5, 6, 7]
-            };
-
         public MainWindow()
         {
             InitializeComponent();
 
-            
             _engine = new GameEngine();
-
 
             _solution = _engine.Play();
 
             var sb = new StringBuilder();
 
-            foreach(var sol in _solution)
+            foreach (var sol in _solution)
             {
                 string rotate = sol.direction == 1 ? "право ->" : " <- лево";
                 sb.Append($"{sol.ringName} повернулась на {rotate}\n");
             }
+
             File.WriteAllText("founded_path.txt", sb.ToString());
             AnalyzeSaver.SaveAnalyse(_engine.GetReport());
 
-           
             _currentState = _engine.Context.InputData.StartState;
+
+         
+            var rings = _engine.Context.Geometry.Rings;
+
+            _ringPositions = rings.ToDictionary(r => r.Name, r => r.Positions);
+
+            _rings = rings.ToDictionary(
+                r => r.Name,
+                r => new RingView(
+                    new Point(r.X, r.Y),
+                    r.Radius,
+                    new SolidColorBrush(Color.Parse(r.Color)),
+                    r.Clockwise));
+
+            _positions = BoardGeometry.Build(
+                _ringPositions,
+                _rings,
+                _currentState.Balls.Length);
+
+            _ballVisuals = new Ellipse?[_currentState.Balls.Length];
 
             _currentStep = 0;
 
-            
             DrawState(_currentState);
 
             UpdateStepText();
         }
 
-       
+        // ---------- Отрисовка ----------
 
         private void DrawState(State state)
         {
@@ -122,69 +111,45 @@ namespace AppUI
 
         private void DrawRings()
         {
-            DrawRing(
-                "Red",
-                Brushes.IndianRed);
-
-            DrawRing(
-                "Yellow",
-                Brushes.Gold);
-
-            DrawRing(
-                "White",
-                Brushes.LightGray);
+            foreach (var (name, ring) in _rings)
+            {
+                DrawRing(name, ring);
+            }
         }
 
-        private void DrawRing(
-            string name,
-            IBrush brush)
+        private void DrawRing(string name, RingView ring)
         {
-            Point center = _ringCenters[name];
-
-            var ring = new Ellipse
+            var ellipse = new Ellipse
             {
-                Width = RingRadius * 2,
-                Height = RingRadius * 2,
+                Width = ring.Radius * 2,
+                Height = ring.Radius * 2,
 
                 Fill = Brushes.Transparent,
 
-                Stroke = brush,
+                Stroke = ring.Brush,
                 StrokeThickness = 7
             };
 
-            Canvas.SetLeft(
-                ring,
-                center.X - RingRadius);
+            Canvas.SetLeft(ellipse, ring.Center.X - ring.Radius);
+            Canvas.SetTop(ellipse, ring.Center.Y - ring.Radius);
 
-            Canvas.SetTop(
-                ring,
-                center.Y - RingRadius);
+            GameCanvas.Children.Add(ellipse);
 
-            GameCanvas.Children.Add(ring);
-
-           
             var text = new TextBlock
             {
                 Text = name,
                 FontSize = 18,
                 FontWeight = FontWeight.Bold,
-                Foreground = brush
+                Foreground = ring.Brush
             };
 
-            Canvas.SetLeft(
-                text,
-                center.X - 30);
-
-            Canvas.SetTop(
-                text,
-                center.Y - RingRadius - 35);
+            Canvas.SetLeft(text, ring.Center.X - 30);
+            Canvas.SetTop(text, ring.Center.Y - ring.Radius - 35);
 
             GameCanvas.Children.Add(text);
         }
 
-        private void DrawBall(
-            int position,
-            ColoredBall ball)
+        private void DrawBall(int position, ColoredBall ball)
         {
             Point point = _positions[position];
 
@@ -199,19 +164,13 @@ namespace AppUI
                 StrokeThickness = 3
             };
 
-            Canvas.SetLeft(
-                ellipse,
-                point.X - BallRadius);
-
-            Canvas.SetTop(
-                ellipse,
-                point.Y - BallRadius);
+            Canvas.SetLeft(ellipse, point.X - BallRadius);
+            Canvas.SetTop(ellipse, point.Y - BallRadius);
 
             GameCanvas.Children.Add(ellipse);
 
             _ballVisuals[position] = ellipse;
 
-            
             var text = new TextBlock
             {
                 Text = GetColorSymbol(ball.Color),
@@ -226,17 +185,11 @@ namespace AppUI
 
                 TextAlignment = TextAlignment.Center,
 
-                VerticalAlignment =
-                    Avalonia.Layout.VerticalAlignment.Center
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center
             };
 
-            Canvas.SetLeft(
-                text,
-                point.X - BallRadius);
-
-            Canvas.SetTop(
-                text,
-                point.Y - BallRadius + 1);
+            Canvas.SetLeft(text, point.X - BallRadius);
+            Canvas.SetTop(text, point.Y - BallRadius + 1);
 
             GameCanvas.Children.Add(text);
         }
@@ -250,25 +203,17 @@ namespace AppUI
                 var text = new TextBlock
                 {
                     Text = i.ToString(),
-
                     FontSize = 12,
-
                     Foreground = Brushes.Gray
                 };
 
-                Canvas.SetLeft(
-                    text,
-                    point.X - 5);
-
-                Canvas.SetTop(
-                    text,
-                    point.Y + BallRadius + 5);
+                Canvas.SetLeft(text, point.X - 5);
+                Canvas.SetTop(text, point.Y + BallRadius + 5);
 
                 GameCanvas.Children.Add(text);
             }
         }
 
-        
         private IBrush GetBallBrush(AppColors color)
         {
             return color switch
@@ -313,10 +258,9 @@ namespace AppUI
             };
         }
 
-        
-        private async void NextButton_OnClick(
-            object? sender,
-            RoutedEventArgs e)
+        // ---------- Шаги и анимация ----------
+
+        private async void NextButton_OnClick(object? sender, RoutedEventArgs e)
         {
             await NextStep();
         }
@@ -335,64 +279,38 @@ namespace AppUI
 
             var move = _solution[_currentStep];
 
-            await AnimateMove(
-                move.ringName,
-                move.direction);
+            await AnimateMove(move.ringName, move.direction);
 
-            
             _currentStep++;
 
             UpdateStepText();
         }
 
-        
-        private async Task AnimateMove(
-            string ringName,
-            int direction)
+        private async Task AnimateMove(string ringName, int direction)
         {
             _isAnimating = true;
 
-            
             State oldState = _currentState;
 
-           
-            State newState = _engine.ApplyMove(
-                oldState,
-                ringName,
-                direction);
+            State newState = _engine.ApplyMove(oldState, ringName, direction);
 
-            
-            int[] ringPositions =
-                _ringPositions[ringName];
+            int[] ringPositions = _ringPositions[ringName];
 
-            
             const int frames = 30;
-
             const int delay = 1;
 
-           
             for (int frame = 0; frame <= frames; frame++)
             {
-                double progress =
-                    (double)frame / frames;
+                double progress = (double)frame / frames;
 
-                double smoothProgress =
-                    EaseInOut(progress);
+                double smoothProgress = EaseInOut(progress);
 
-                foreach (int sourcePosition in ringPositions)
+                for (int i = 0; i < ringPositions.Length; i++)
                 {
-                    int sourceIndex =
-                        Array.IndexOf(
-                            ringPositions,
-                            sourcePosition);
-
-                    int targetIndex =
-                        Mod(
-                            sourceIndex + direction,
-                            ringPositions.Length);
+                    int sourcePosition = ringPositions[i];
 
                     int targetPosition =
-                        ringPositions[targetIndex];
+                        ringPositions[Mod(i + direction, ringPositions.Length)];
 
                     Point point = GetArcPoint(
                         ringName,
@@ -401,18 +319,14 @@ namespace AppUI
                         direction,
                         smoothProgress);
 
-                    MoveBallVisual(
-                        sourcePosition,
-                        point);
+                    MoveBallVisual(sourcePosition, point);
                 }
 
                 await Task.Delay(delay);
             }
 
-            
             _currentState = newState;
 
-            
             DrawState(_currentState);
 
             _isAnimating = false;
@@ -425,86 +339,39 @@ namespace AppUI
             int direction,
             double progress)
         {
-            Point center =
-                _ringCenters[ringName];
+            RingView ring = _rings[ringName];
 
-            Point source =
-                _positions[sourcePosition];
+            double a0 = BoardGeometry.Angle(ring.Center, _positions[sourcePosition]);
+            double a1 = BoardGeometry.Angle(ring.Center, _positions[targetPosition]);
 
-            Point target =
-                _positions[targetPosition];
+            // direction = +1: к следующей позиции в списке кольца
+            double sign = (ring.Clockwise ? 1 : -1) * direction;
 
-            
-            double startAngle =
-                Math.Atan2(
-                    source.Y - center.Y,
-                    source.X - center.X);
+            double delta = sign * BoardGeometry.Norm(sign * (a1 - a0));
 
-            double targetAngle =
-                Math.Atan2(
-                    target.Y - center.Y,
-                    target.X - center.X);
-
-            
-            double delta =
-                targetAngle - startAngle;
-
-            
-            while (delta > Math.PI)
-            {
-                delta -= 2 * Math.PI;
-            }
-
-            while (delta < -Math.PI)
-            {
-                delta += 2 * Math.PI;
-            }
-
-           
-            if (direction == 1 && delta < 0)
-            {
-                delta += 2 * Math.PI;
-            }
-
-            if (direction == -1 && delta > 0)
-            {
-                delta -= 2 * Math.PI;
-            }
-
-            double angle =
-                startAngle + delta * progress;
+            double angle = a0 + delta * progress;
 
             return new Point(
-                center.X + RingRadius * Math.Cos(angle),
-                center.Y + RingRadius * Math.Sin(angle));
+                ring.Center.X + ring.Radius * Math.Cos(angle),
+                ring.Center.Y + ring.Radius * Math.Sin(angle));
         }
 
-        private void MoveBallVisual(
-            int sourcePosition,
-            Point point)
+        private void MoveBallVisual(int sourcePosition, Point point)
         {
-            
-            Ellipse? ball =
-                _ballVisuals[sourcePosition];
+            Ellipse? ball = _ballVisuals[sourcePosition];
 
             if (ball == null)
             {
                 return;
             }
 
-            Canvas.SetLeft(
-                ball,
-                point.X - BallRadius);
-
-            Canvas.SetTop(
-                ball,
-                point.Y - BallRadius);
+            Canvas.SetLeft(ball, point.X - BallRadius);
+            Canvas.SetTop(ball, point.Y - BallRadius);
         }
 
         private double EaseInOut(double value)
         {
-            return value * value *
-                   (3 - 2 * value);
+            return value * value * (3 - 2 * value);
         }
 
         private int Mod(int value, int modulus)
@@ -512,11 +379,9 @@ namespace AppUI
             return ((value % modulus) + modulus) % modulus;
         }
 
-       
+        // ---------- Кнопки ----------
 
-        private async void PreviousButton_OnClick(
-            object? sender,
-            RoutedEventArgs e)
+        private async void PreviousButton_OnClick(object? sender, RoutedEventArgs e)
         {
             if (_isAnimating)
             {
@@ -528,23 +393,18 @@ namespace AppUI
                 return;
             }
 
-            
             _currentStep--;
 
-            
-            _currentState =
-                _engine.Context.InputData.StartState;
+            _currentState = _engine.Context.InputData.StartState;
 
-           
             for (int i = 0; i < _currentStep; i++)
             {
                 var move = _solution[i];
 
-                _currentState =
-                    _engine.ApplyMove(
-                        _currentState,
-                        move.ringName,
-                        move.direction);
+                _currentState = _engine.ApplyMove(
+                    _currentState,
+                    move.ringName,
+                    move.direction);
             }
 
             DrawState(_currentState);
@@ -554,11 +414,7 @@ namespace AppUI
             await Task.CompletedTask;
         }
 
-        
-
-        private async void AutoButton_OnClick(
-            object? sender,
-            RoutedEventArgs e)
+        private async void AutoButton_OnClick(object? sender, RoutedEventArgs e)
         {
             if (_isAutoPlaying)
             {
@@ -569,24 +425,19 @@ namespace AppUI
 
             _isAutoPlaying = true;
 
-            while (_isAutoPlaying &&
-                   _currentStep < _solution.Count)
+            while (_isAutoPlaying && _currentStep < _solution.Count)
             {
                 await NextStep();
-
-             
             }
 
             _isAutoPlaying = false;
         }
 
-      
         private void UpdateStepText()
         {
             if (_solution.Count == 0)
             {
-                StepText.Text =
-                    "Решение не найдено";
+                StepText.Text = "Решение не найдено";
 
                 return;
             }
@@ -594,19 +445,14 @@ namespace AppUI
             if (_currentStep >= _solution.Count)
             {
                 StepText.Text =
-                    $"✓ Цель достигнута!    " +
-                    $"Шагов: {_solution.Count}";
+                    $"✓ Цель достигнута!    Шагов: {_solution.Count}";
 
                 return;
             }
 
-            var move =
-                _solution[_currentStep];
+            var move = _solution[_currentStep];
 
-            string direction =
-                move.direction == 1
-                    ? "→"
-                    : "←";
+            string direction = move.direction == 1 ? "→" : "←";
 
             StepText.Text =
                 $"Шаг {_currentStep} / {_solution.Count}    " +

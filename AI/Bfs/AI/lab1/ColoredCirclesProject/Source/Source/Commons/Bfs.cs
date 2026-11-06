@@ -7,23 +7,25 @@ namespace Source.Common
    
     public class Bfs
     {
-        private HashSet<string> _visited { get; set; } = new();
-        private  int MaxDepth = 10;
-
+       
+  
+        
         private bool isFoundTheWay = false;
         private readonly GameContext _context;
         private Queue<(State currState, List<(string, int)> move)> _possibleWays { get; set; } = new();
-    
+
+        private HashSet<string> _visited = new();
+
         public Bfs(GameContext context)
         {
-           
+
             _context = context;
 
-            var startVisit = ColorToString(_context.InputData.StartState);
-            
-            _visited.Add(startVisit);
+            Validate(context);
 
-            _possibleWays.Enqueue((_context.InputData.StartState, new()));
+            _visited.Add(ColorToString(context.InputData.StartState));
+
+            _possibleWays.Enqueue((context.InputData.StartState, new()));
 
         }
         private string ColorToString(State state)
@@ -38,13 +40,31 @@ namespace Source.Common
 
             return string.Join("-", colors);
         }
-        private void ExtendDeepth()
-        {
-            if (!isFoundTheWay)
-            {
-                MaxDepth += 5;
-            }
-        }
+       public static void Validate(GameContext ctx)
+{
+    int n = ctx.InputData.StartState.Balls.Length;
+
+    if (ctx.InputData.TargetState.Balls.Length != n)
+        throw new InvalidOperationException(
+            $"В Start {n} шариков, а в Target {ctx.InputData.TargetState.Balls.Length}");
+
+    var used = ctx.Geometry.Rings.SelectMany(r => r.Positions).ToHashSet();
+
+    foreach (int p in used)
+        if (p < 0 || p >= n)
+            throw new InvalidOperationException(
+                $"Позиция {p} есть в кольцах, но шариков всего {n}");
+
+    for (int i = 0; i < n; i++)
+        if (!used.Contains(i))
+            throw new InvalidOperationException($"Позиция {i} не входит ни в одно кольцо");
+
+    var a = ctx.InputData.StartState.Balls.Select(b => b.Color).OrderBy(c => c);
+    var b2 = ctx.InputData.TargetState.Balls.Select(b => b.Color).OrderBy(c => c);
+
+    if (!a.SequenceEqual(b2))
+        throw new InvalidOperationException("Набор цветов в Start и Target не совпадает");
+}
         public List<(string ringName, int direction)> GetPossibleActions()
         {
             var actions = new List<(string, int)>();
@@ -62,43 +82,15 @@ namespace Source.Common
         }
         public List<(string ringName, int direction)> FindWay()
         {
-            var startDepth = 1;
-            var maxDepth = 50;
 
-            while (startDepth <= maxDepth)
-            {
-                _visited.Clear();
-                _possibleWays.Clear();
-                _visited.Add(ColorToString(_context.InputData.StartState));
-                _possibleWays.Enqueue((_context.InputData.StartState, new()));
-
-                var result = FindWayWithMaxDepth(startDepth);
-                if (result != null)
-                {
-                    return result;
-                }
-                startDepth += 1;
-            }
-
-            return [];
-        }
-
-        private List<(string ringName, int direction)>? FindWayWithMaxDepth(int limit)
-        {
             while (_possibleWays.Count > 0)
             {
-              
                 var way = _possibleWays.Dequeue();
 
                 if (IsTarget(way.currState))
                 {
                     return way.move;
                 }
-                 if (way.move.Count >= limit)
-                {
-                  
-                    continue;
-                  }
 
                 List<(string ringName, int direction)> possibleActions = GetPossibleActions();
 
@@ -120,8 +112,10 @@ namespace Source.Common
                         _possibleWays.Enqueue((stateAfterRotate, newMove));
                     }
                 }
+
             }
-            return null;
+
+            return [];
         }
         public State Rotate(State current, string ringName, int direction)
         {

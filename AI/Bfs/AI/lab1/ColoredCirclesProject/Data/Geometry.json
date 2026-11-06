@@ -1,31 +1,7 @@
 {
   "Rings": [
-    {
-      "Name": "Red",
-      "Positions": [
-        0,
-        1,
-        2,
-        3
-      ]
-    },
-    {
-      "Name": "Yellow",
-      "Positions": [
-        2,
-        3,
-        4,
-        5
-      ]
-    },
-    {
-      "Name": "White",
-      "Positions": [
-        4,
-        5,
-        6,
-        7
-      ]
-    }
+    { "Name": "Red",    "Positions": [2, 3, 0, 8, 1],     "Color": "#CD5C5C", "X": 300, "Y": 360, "Radius": 150, "Clockwise": true },
+    { "Name": "Green",  "Positions": [2, 3, 9, 4, 5, 10], "Color": "#228B22", "X": 500, "Y": 360, "Radius": 150, "Clockwise": false },
+    { "Name": "Orange", "Positions": [4, 5, 6, 7],        "Color": "#FFA500", "X": 700, "Y": 360, "Radius": 150, "Clockwise": true }
   ]
 }
