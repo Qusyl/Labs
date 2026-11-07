@@ -2,7 +2,13 @@
   "Start": {
     "Balls": [
       {
+        "Color": "Purple"
+      },
+      {
         "Color": "Red"
+      },
+      {
+        "Color": "Cyan"
       },
       {
         "Color": "Purple"
@@ -14,24 +20,18 @@
         "Color": "Red"
       },
       {
-        "Color": "Purple"
-      },
-      {
-        "Color": "Cyan"
-      },
-      {
         "Color": "Red"
       },
       {
-        "Color": "Purple"
-      },
-      {
-        "Color": "Purple"
-      },
-      {
         "Color": "Cyan"
       },
-       {
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
         "Color": "Cyan"
       }
     ]

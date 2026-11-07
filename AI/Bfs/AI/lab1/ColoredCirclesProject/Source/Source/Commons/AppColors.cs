@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Source.Common
 {
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum AppColors
     {
         Red,

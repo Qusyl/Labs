@@ -96,7 +96,7 @@
       private static UserInput InitializeUserInput()
 {
     var directory = FindDirectory();
-    var jsonPath = Path.Combine(directory, "ColoredCirclesProject","Data", "Input.json");
+            var jsonPath = "/home/denis/Documents/Labs/AI/Bfs/AI/lab1/ColoredCirclesProject/Data/Input.json";
 
     if (!File.Exists(jsonPath))
     {
@@ -128,9 +128,9 @@
 
     var directory = FindDirectory();
 
-   
 
-    var jsonPath = Path.Combine(directory, "ColoredCirclesProject","Data", "Geometry.json");
+
+            var jsonPath = "/home/denis/Documents/Labs/AI/Bfs/AI/lab1/ColoredCirclesProject/Data/Geometry.json";
 
 
 

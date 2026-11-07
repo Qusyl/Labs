@@ -1,0 +1,750 @@
+"Start": {
+    "Balls": [
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Red"
+      }
+    ]
+  },
+  "Target": {
+    "Balls": [
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      }
+    ]
+  }
+}{
+  "Start": {
+    "Balls": [
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Purple"
+      }
+    ]
+  },
+  "Target": {
+    "Balls": [
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      }
+    ]
+  }
+}{
+  "Start": {
+    "Balls": [
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Purple"
+      }
+    ]
+  },
+  "Target": {
+    "Balls": [
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      }
+    ]
+  }
+}{
+  "Start": {
+    "Balls": [
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Cyan"
+      }
+    ]
+  },
+  "Target": {
+    "Balls": [
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      }
+    ]
+  }
+}{
+  "Start": {
+    "Balls": [
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Purple"
+      }
+    ]
+  },
+  "Target": {
+    "Balls": [
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      }
+    ]
+  }
+}{
+  "Start": {
+    "Balls": [
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Purple"
+      }
+    ]
+  },
+  "Target": {
+    "Balls": [
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      }
+    ]
+  }
+}{
+  "Start": {
+    "Balls": [
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      }
+    ]
+  },
+  "Target": {
+    "Balls": [
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      }
+    ]
+  }
+}{
+  "Start": {
+    "Balls": [
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Red"
+      }
+    ]
+  },
+  "Target": {
+    "Balls": [
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      }
+    ]
+  }
+}{
+  "Start": {
+    "Balls": [
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Cyan"
+      }
+    ]
+  },
+  "Target": {
+    "Balls": [
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      }
+    ]
+  }
+}{
+  "Start": {
+    "Balls": [
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Cyan"
+      }
+    ]
+  },
+  "Target": {
+    "Balls": [
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Red"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Purple"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      },
+      {
+        "Color": "Cyan"
+      }
+    ]
+  }
+}

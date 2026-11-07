@@ -2,6 +2,9 @@
   <Folder Name="/Application/">
     <Project Path="Application/Application/Application.csproj" />
   </Folder>
+  <Folder Name="/Generator/">
+    <Project Path="Generator/DGenerator/DGenerator.csproj" />
+  </Folder>
   <Folder Name="/Source/">
     <Project Path="Source/Source/Source.csproj" />
   </Folder>

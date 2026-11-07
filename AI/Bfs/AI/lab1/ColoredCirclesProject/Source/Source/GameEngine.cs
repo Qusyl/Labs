@@ -19,6 +19,7 @@
 
             _graph = new Bfs(Context);
         }
+        
 
         public List<(string ringName, int direction)> Play()
         {

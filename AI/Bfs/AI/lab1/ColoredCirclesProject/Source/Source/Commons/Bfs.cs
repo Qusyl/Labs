@@ -1,15 +1,13 @@
 using System.Drawing;
 using System.Reflection.Metadata;
+using Source.Commons;
 using Source.Model;
 
 namespace Source.Common
 {
    
-    public class Bfs
+    public class Bfs : SearchBase
     {
-       
-  
-        
         private bool isFoundTheWay = false;
         private readonly GameContext _context;
         private Queue<(State currState, List<(string, int)> move)> _possibleWays { get; set; } = new();
