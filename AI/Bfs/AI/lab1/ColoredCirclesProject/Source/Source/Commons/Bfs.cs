@@ -1,5 +1,6 @@
 using System.Drawing;
 using System.Reflection.Metadata;
+using Source.Analyse;
 using Source.Commons;
 using Source.Model;
 
@@ -10,9 +11,13 @@ namespace Source.Common
     {
         private bool isFoundTheWay = false;
         private readonly GameContext _context;
+
+        private  SearchStatistics _statistic { get; set; } = new();      
         private Queue<(State currState, List<(string, int)> move)> _possibleWays { get; set; } = new();
 
         private HashSet<string> _visited = new();
+
+        private HashSet<string> _closed = new();
 
         public Bfs(GameContext context)
         {
@@ -83,10 +88,18 @@ namespace Source.Common
 
             while (_possibleWays.Count > 0)
             {
+                _statistic.Iterations++;
+
                 var way = _possibleWays.Dequeue();
+
+                string currentKey = ColorToString(way.currState);
+
+                _closed.Add(currentKey);
 
                 if (IsTarget(way.currState))
                 {
+                    UpdateMaxNodes();
+                    AnaliticSaver.SaveAnalitic(_statistic);
                     return way.move;
                 }
 
@@ -111,9 +124,20 @@ namespace Source.Common
                     }
                 }
 
+                UpdateMaxNodes();
+
             }
 
             return [];
+        }
+        private void UpdateMaxNodes()
+        {
+            var M = _possibleWays.Count + _closed.Count;
+
+            if(M > _statistic.MaxNodesInMemory)
+            {
+                _statistic.MaxNodesInMemory = M;
+            }
         }
         public State Rotate(State current, string ringName, int direction)
         {
